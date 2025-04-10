@@ -149,7 +149,9 @@ func TestMultiSend(t *testing.T) {
 func TestParsCoin(t *testing.T) {
 	// amount := "0.00230013"
 	// amount := "123243253.00230013"
-	amount := "123243253.0023"
+	// amount := "123243253.0023"
+	// amount := "0.665579063"
+	amount := "2040.06264"
 	a := decimal.RequireFromString(amount)
 	t.Log(a)
 	adenom := a.Mul(decimal.New(1, 6))
