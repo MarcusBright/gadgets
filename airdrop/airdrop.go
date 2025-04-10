@@ -217,7 +217,7 @@ func (airDrop *AirDrop) MultiSend(items []models.BabySendAirDrop) (string, error
 		logrus.Errorf("CalculateGas error:%v", err)
 		return "", err
 	}
-	txFactory = txFactory.WithGas(adjusted).WithKeybase(airDrop.ClientContext.Keyring).WithFees(airDrop.Config.Fee).WithMemo("airdrop")
+	txFactory = txFactory.WithGas(adjusted).WithKeybase(airDrop.ClientContext.Keyring).WithFees(airDrop.Config.Fee).WithMemo("BR_BABY1")
 	logrus.Infof("fee:%v, gasLimit:%v, sim used:%v, sim wanted: %v, gasPrice:%v", txFactory.Fees(), txFactory.Gas(), sim.GasInfo.GasUsed, sim.GasInfo.GasWanted, txFactory.GasPrices())
 	txBuilder, err := txFactory.BuildUnsignedTx(msg)
 	if err != nil {
