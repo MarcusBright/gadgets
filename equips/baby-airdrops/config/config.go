@@ -17,6 +17,8 @@ type Config struct {
 	Mnemonic      string `yaml:"mnemonic"`
 	Address       string `yaml:"address"`
 	BatchLimit    uint   `yaml:"batchLimit"`
+	SendSerial    string `yaml:"sendSerial"`
+	Memo          string `yaml:"memo"`
 	Fee           string `yaml:"fee"`
 	NoOncePerTime bool   `yaml:"noOncePerTime"`
 }

@@ -96,7 +96,9 @@ func (airDrop *AirDrop) Run() {
 		}
 
 		var dropItems []models.BabySendAirDrop
-		rest := airDrop.DBEngine.Where("hash = ?", "").Where("confirm = ?", 0).Limit(int(airDrop.Config.BatchLimit)).Find(&dropItems)
+		rest := airDrop.DBEngine.Where("hash = ?", "").Where("confirm = ?", 0).
+			Where("send_serial = ?", airDrop.Config.SendSerial).Order("id asc").
+			Limit(int(airDrop.Config.BatchLimit)).Find(&dropItems)
 		if rest.Error != nil {
 			panic(rest.Error)
 		}
@@ -217,7 +219,7 @@ func (airDrop *AirDrop) MultiSend(items []models.BabySendAirDrop) (string, error
 		logrus.Errorf("CalculateGas error:%v", err)
 		return "", err
 	}
-	txFactory = txFactory.WithGas(adjusted).WithKeybase(airDrop.ClientContext.Keyring).WithFees(airDrop.Config.Fee).WithMemo("BR_BABY1")
+	txFactory = txFactory.WithGas(adjusted).WithKeybase(airDrop.ClientContext.Keyring).WithFees(airDrop.Config.Fee).WithMemo(airDrop.Config.Memo)
 	logrus.Infof("fee:%v, gasLimit:%v, sim used:%v, sim wanted: %v, gasPrice:%v", txFactory.Fees(), txFactory.Gas(), sim.GasInfo.GasUsed, sim.GasInfo.GasWanted, txFactory.GasPrices())
 	txBuilder, err := txFactory.BuildUnsignedTx(msg)
 	if err != nil {
