@@ -118,7 +118,9 @@ func (airDrop *AirDrop) Run() {
 			addresses = append(addresses, v.Address)
 		}
 		// update hash
-		rest = airDrop.DBEngine.Model(&models.BabySendAirDrop{}).Where("address in (?)", addresses).Updates(map[string]interface{}{"hash": txHash})
+		rest = airDrop.DBEngine.Model(&models.BabySendAirDrop{}).Where("address in (?)", addresses).
+			Where("send_serial = ?", airDrop.Config.SendSerial).
+			Updates(map[string]interface{}{"hash": txHash})
 		if rest.Error != nil {
 			panic(rest.Error)
 		}
@@ -129,7 +131,9 @@ func (airDrop *AirDrop) Run() {
 			return
 		}
 		// update confirm
-		rest = airDrop.DBEngine.Model(&models.BabySendAirDrop{}).Where("address in (?)", addresses).Updates(map[string]interface{}{"confirm": 1})
+		rest = airDrop.DBEngine.Model(&models.BabySendAirDrop{}).Where("address in (?)", addresses).
+			Where("send_serial = ?", airDrop.Config.SendSerial).
+			Updates(map[string]interface{}{"confirm": 1})
 		if rest.Error != nil {
 			panic(rest.Error)
 		}
