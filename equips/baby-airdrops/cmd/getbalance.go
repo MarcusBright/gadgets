@@ -15,13 +15,16 @@ import (
 // getbalanceCmd represents the getbalance command
 var getbalanceCmd = &cobra.Command{
 	Use:   "getbalance",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Query account balance on Babylon blockchain",
+	Long: `Check the token balance of an address on the Babylon blockchain.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+This command will:
+- Connect to the configured Babylon network
+- Query the balance of the specified address
+- Display the balance in both raw and decimal format
+
+Example:
+  babylon getbalance --config ./config.yaml`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("getbalance called")
 		configPath := cmd.Flag("config").Value.String()

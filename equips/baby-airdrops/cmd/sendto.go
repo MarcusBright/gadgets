@@ -16,13 +16,19 @@ import (
 // sendtoCmd represents the sendto command
 var sendtoCmd = &cobra.Command{
 	Use:   "sendto",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Send tokens to a specific address",
+	Long: `Transfer tokens to a specified address on the Babylon blockchain.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+This command allows you to:
+- Send tokens to a single address
+- Specify the amount to send
+- Confirm the transaction before execution
+
+Example:
+  babylon sendto -t <to_address> -a <amount> --config ./config.yaml
+	amount must be in decimal format,etc 12.345678
+
+The command will display the transaction hash upon successful completion.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("sendto called")
 		configPath := cmd.Flag("config").Value.String()

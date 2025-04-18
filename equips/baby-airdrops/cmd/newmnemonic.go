@@ -17,13 +17,15 @@ import (
 // newmnemonicCmd represents the newmnemonic command
 var newmnemonicCmd = &cobra.Command{
 	Use:   "newmnemonic",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Generate a new mnemonic and Babylon address",
+	Long: `Generate a new BIP39 mnemonic phrase and corresponding Babylon blockchain address.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+This command will:
+- Create a new random mnemonic phrase
+- Derive a Babylon address from the mnemonic
+- Display both the mnemonic and address
+
+The generated mnemonic should be stored securely as it provides access to the address.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("newmnemonic called")
 		mnemonicEntropySize := 128

@@ -1,0 +1,20 @@
+# rpc endpoint
+rpcEndPoint: ""
+# database 
+dsn: ""
+# chainId
+chainId: ""
+# sender's mnemonic, get from newmnemonic command
+mnemonic: ""
+# sender's address, get from newmnemonic command
+address: ""
+# batch size
+batchLimit: 0
+# send serial
+sendSerial: ""
+# multi send memo
+memo: ""
+# fee amount, in ubbn, etc 2000ubbn
+fee: ""
+# whether to send once per time
+noOncePerTime: false

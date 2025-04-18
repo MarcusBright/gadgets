@@ -12,13 +12,16 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "babylon",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "A CLI tool for Babylon blockchain airdrop operations",
+	Long: `A command-line interface tool for managing airdrop operations on the Babylon blockchain.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+This tool provides various commands for:
+- Generating new mnemonics and addresses
+- Checking account balances
+- Sending tokens to single or multiple addresses
+- Running batch airdrop operations
+
+Use --config flag to specify the configuration file path.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

@@ -18,13 +18,19 @@ import (
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Execute batch airdrop operations",
+	Long: `Run batch airdrop operations according to the configuration file.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+This command reads the airdrop configuration file and executes token transfers
+to multiple addresses in batch. It requires a config file that specifies:
+- Sender's mnemonic
+- Network configuration
+- List of recipient addresses and amounts, which read from database.
+
+Example:
+  babylon run --config ./config.yaml
+
+The command will ask for confirmation before executing the transfers.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("run called")
 		configPath := cmd.Flag("config").Value.String()
@@ -46,6 +52,12 @@ to quickly create a Cobra application.`,
 			}
 		}()
 		airdrop := airdrop.New(config, quit)
+		fmt.Println("press YES to send")
+		confirm := ""
+		fmt.Scanln(&confirm)
+		if confirm != "YES" {
+			return
+		}
 		airdrop.Run()
 	},
 }
