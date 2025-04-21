@@ -1,0 +1,9 @@
+[submodule "bera_airdrop/contracts/lib/forge-std"]
+	path = bera_airdrop/contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "bera_airdrop/contracts/lib/OpenZeppelin/openzeppelin-contracts@4.8.3"]
+	path = bera_airdrop/contracts/lib/OpenZeppelin/openzeppelin-contracts@4.8.3
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts.git
+[submodule "bera_airdrop/contracts/lib/OpenZeppelin/openzeppelin-contracts-upgradeable@4.8.3"]
+	path = bera_airdrop/contracts/lib/OpenZeppelin/openzeppelin-contracts-upgradeable@4.8.3
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable.git
