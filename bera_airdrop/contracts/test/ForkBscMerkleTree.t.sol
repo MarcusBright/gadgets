@@ -54,7 +54,7 @@ contract ForkBscMerkleTreeTest is Test {
             new TransparentUpgradeableProxy(address(implementation), address(proxyAdmin), initData);
 
         // Cast proxy contract to Airdrop interface
-        airdrop = Airdrop(address(proxy));
+        airdrop = Airdrop(payable(address(proxy)));
 
         // Deal native tokens to airdrop contract for testing
         deal(address(airdrop), 100000 ether);
