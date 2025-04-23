@@ -31,6 +31,8 @@ contract Airdrop is Initializable, AccessControlUpgradeable, PausableUpgradeable
     /// @notice Current epoch number of the airdrop distribution.
     uint256 public currentEpoch;
 
+    receive() external payable {}
+
     /**
      * ======================================================================================
      *

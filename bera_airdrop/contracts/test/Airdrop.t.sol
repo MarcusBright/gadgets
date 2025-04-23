@@ -35,7 +35,7 @@ contract AirdropTest is Test {
             new TransparentUpgradeableProxy(address(implementation), address(proxyAdmin), initData);
 
         // Cast proxy contract to Airdrop interface
-        airdrop = Airdrop(address(proxy));
+        airdrop = Airdrop(payable(address(proxy)));
 
         // Deal tokens to airdrop contract for distribution
         deal(address(airdrop), 1 ether);
