@@ -58,6 +58,14 @@ contract DeployAirdrop is Script {
         console.log("Admin:", admin);
         console.log("ActivationDelay:", activationDelay);
 
+        if (proxyAdmin == address(0x0)) {
+            ProxyAdmin _pa = new ProxyAdmin();
+            _pa.transferOwnership(address(admin));
+            proxyAdmin = address(_pa);
+            console.log("\n=== Deploy new ProxyAdmin ===");
+            console.log("ProxyAdmin deployed at:", proxyAdmin);
+        }
+
         // Deploy implementation contract
         Airdrop implementation = new Airdrop();
         console.log("\n=== Deployment Results ===");
