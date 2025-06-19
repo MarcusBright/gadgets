@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
@@ -31,6 +33,9 @@ contract Airdrop is Initializable, AccessControlUpgradeable, PausableUpgradeable
     /// @notice Current epoch number of the airdrop distribution.
     uint256 public currentEpoch;
 
+    /// @notice The address of the token used for airdrop, if zero address, native token is used.
+    address public tokenAddress;
+
     receive() external payable {}
 
     /**
@@ -57,7 +62,7 @@ contract Airdrop is Initializable, AccessControlUpgradeable, PausableUpgradeable
      * @param _activationDelay The initial delay before claims can be made.
      * @param _admin The address of the contract administrator.
      */
-    function initialize(uint32 _activationDelay, address _admin) public initializer {
+    function initialize(uint32 _activationDelay, address _admin, address _tokenAddress) public initializer {
         require(_admin != address(0), "SYS001");
 
         __AccessControl_init();
@@ -70,6 +75,7 @@ contract Airdrop is Initializable, AccessControlUpgradeable, PausableUpgradeable
 
         _setDelay(_activationDelay);
         currentEpoch = 0;
+        tokenAddress = _tokenAddress;
     }
 
     /**
@@ -221,8 +227,12 @@ contract Airdrop is Initializable, AccessControlUpgradeable, PausableUpgradeable
         // Mark as claimed.
         claimed[currentEpoch][msg.sender] = true;
 
-        (bool ok,) = payable(msg.sender).call{value: _amount}("");
-        require(ok, "SYS002");
+        if (tokenAddress == address(0)) {
+            (bool ok,) = payable(msg.sender).call{value: _amount}("");
+            require(ok, "SYS002");
+        } else {
+            SafeERC20.safeTransfer(IERC20(tokenAddress), msg.sender, _amount);
+        }
 
         emit AirdropClaimed(currentEpoch, msg.sender, _amount);
     }

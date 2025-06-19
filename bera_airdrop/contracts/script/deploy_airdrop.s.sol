@@ -15,6 +15,7 @@ DEPLOYER_ADDRESS=<deployer-address>
 PROXY_ADMIN=<proxy-admin-address>
 ADMIN=<admin-address>
 ACTIVATION_DELAY=<activation-delay-seconds>
+TOKEN_ADDRESS=<token-address>
 EVM_RPC=<evm-rpc>
 ETHERSCAN_API_KEY=<etherscan-api-key>
 ETHERSCAN_API_URL=<etherscan-api-url>
@@ -30,7 +31,7 @@ forge script -vvvv \
     --verifier custom \
     --verifier-api-key $ETHERSCAN_API_KEY \
     --verifier-url $ETHERSCAN_API_URL \
-    script/deploy_airdrop.t.sol:DeployAirdrop
+    script/deploy_airdrop.s.sol:DeployAirdrop
 
 # verify source code using flatted code
 forge script -vvvv \
@@ -38,7 +39,7 @@ forge script -vvvv \
     --sender $DEPLOYER_ADDRESS \
     -f $EVM_RPC \
     --broadcast \
-    script/deploy_airdrop.t.sol:DeployAirdrop
+    script/deploy_airdrop.s.sol:DeployAirdrop
 */
 
 contract DeployAirdrop is Script {
@@ -48,6 +49,7 @@ contract DeployAirdrop is Script {
         address proxyAdmin = vm.envAddress("PROXY_ADMIN");
         address admin = vm.envAddress("ADMIN");
         uint32 activationDelay = uint32(vm.envUint("ACTIVATION_DELAY"));
+        address tokenAddress = vm.envAddress("TOKEN_ADDRESS");
 
         vm.startBroadcast(deployer);
 
@@ -57,6 +59,7 @@ contract DeployAirdrop is Script {
         console.log("ProxyAdmin:", proxyAdmin);
         console.log("Admin:", admin);
         console.log("ActivationDelay:", activationDelay);
+        console.log("TokenAddress:", tokenAddress);
 
         if (proxyAdmin == address(0x0)) {
             ProxyAdmin _pa = new ProxyAdmin();
@@ -72,7 +75,8 @@ contract DeployAirdrop is Script {
         console.log("Implementation deployed at:", address(implementation));
 
         // Prepare initialization data
-        bytes memory initData = abi.encodeWithSelector(Airdrop.initialize.selector, activationDelay, admin);
+        bytes memory initData =
+            abi.encodeWithSelector(Airdrop.initialize.selector, activationDelay, admin, tokenAddress);
 
         // Deploy proxy contract using existing ProxyAdmin
         TransparentUpgradeableProxy proxy =
