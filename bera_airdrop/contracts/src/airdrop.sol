@@ -234,7 +234,7 @@ contract Airdrop is Initializable, AccessControlUpgradeable, PausableUpgradeable
             SafeERC20.safeTransfer(IERC20(tokenAddress), msg.sender, _amount);
         }
 
-        emit AirdropClaimed(currentEpoch, msg.sender, _amount);
+        emit AirdropClaimed(currentEpoch, msg.sender, tokenAddress, _amount);
     }
 
     /**
@@ -286,7 +286,7 @@ contract Airdrop is Initializable, AccessControlUpgradeable, PausableUpgradeable
     /// @notice Emitted when the valid duration is updated for the current epoch.
     event ValidDurationUpdate(uint256 indexed epoch, uint32 preValidDuration, uint32 validDuration);
     /// @notice Emitted when an airdrop is claimed by a user.
-    event AirdropClaimed(uint256 indexed epoch, address indexed user, uint256 amount);
+    event AirdropClaimed(uint256 indexed epoch, address indexed user, address tokenAddress, uint256 amount);
     /// @notice Emitted when the activation delay is updated.
     event ActivationDelaySet(uint32 oldActivationDelay, uint32 newActivationDelay);
     /// @notice Emitted when the distribution status is changed.
