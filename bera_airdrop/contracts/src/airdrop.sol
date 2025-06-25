@@ -162,6 +162,23 @@ contract Airdrop is Initializable, AccessControlUpgradeable, PausableUpgradeable
     }
 
     /**
+     * @notice Withdraws tokens from the contract.
+     * @dev Only callable by accounts with OPERATOR_ROLE.
+     * @param _token The address of the token to withdraw (use address(0) for native tokens).
+     * @param _to The address to send the withdrawn tokens to.
+     * @param _amount The amount of tokens to withdraw.
+     */
+    function withdraw(address _token, address _to, uint256 _amount) external onlyRole(OPERATOR_ROLE) {
+        require(!_isActive(), "USR001");
+
+        if (_token == address(0)) {
+            payable(_to).transfer(_amount);
+        } else {
+            IERC20(_token).transfer(_to, _amount);
+        }
+    }
+
+    /**
      * ======================================================================================
      *
      * INTERNAL FUNCTIONS
