@@ -1,0 +1,410 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "title": "directBTC API",
+    "version": "1.0"
+  },
+  "basePath": "/",
+  "paths": {
+    "/api/v1/task/bind": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "task"
+        ],
+        "summary": "BindEvmAddress",
+        "operationId": "bindEvmAddress",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "message",
+                "signature"
+              ],
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "signature": {
+                  "type": "string",
+                  "example": "H3x5bM2MpXK9MyLLbIGWQjZQNTP6lfuIjmPqMrU7YZ5CCm5bS9L+zCtrfIOJaloDb0mf9QBSEDIs4UCd/jou1VI="
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "description": "business code",
+                  "type": "integer",
+                  "example": 0
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "evmAddress": {
+                      "type": "string",
+                      "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+                    },
+                    "evmChainId": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "signAddress": {
+                      "type": "string",
+                      "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
+                    },
+                    "transactionHash": {
+                      "type": "string",
+                      "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+                    }
+                  }
+                },
+                "msg": {
+                  "description": "business message",
+                  "type": "string",
+                  "example": "ok"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/task/list": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "task"
+        ],
+        "summary": "GetTaskList",
+        "operationId": "getTaskList",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "limit",
+                "offset",
+                "orderDir"
+              ],
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "default": 10,
+                  "maximum": 50,
+                  "minimum": 1,
+                  "example": 10
+                },
+                "offset": {
+                  "type": "integer",
+                  "default": 0,
+                  "example": 0
+                },
+                "orderDir": {
+                  "type": "string",
+                  "default": "desc",
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ],
+                  "example": "desc"
+                },
+                "status": {
+                  "type": "array",
+                  "enum": [
+                    "init",
+                    "binded",
+                    "receivedInEvm",
+                    "approvedInEvm",
+                    "rejectedInEvm"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "description": "business code",
+                  "type": "integer",
+                  "example": 0
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "memPool",
+                        "mined"
+                      ],
+                      "properties": {
+                        "memPool": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "hash",
+                              "amountSatoshi",
+                              "status",
+                              "blockNumber",
+                              "blockTime",
+                              "confirmNumber",
+                              "confirmThreshold",
+                              "bindedEvmAddress",
+                              "chainId",
+                              "recievedEventTxHash",
+                              "acceptedEventTxHash",
+                              "rejectedEventTxHash"
+                            ],
+                            "properties": {
+                              "InputAddress": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "TresuryAddress": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "acceptedEventTxHash": {
+                                "type": "string",
+                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+                              },
+                              "amountSatoshi": {
+                                "type": "string",
+                                "example": "111000000"
+                              },
+                              "bindedEvmAddress": {
+                                "type": "string",
+                                "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+                              },
+                              "blockNumber": {
+                                "type": "integer",
+                                "example": 919346
+                              },
+                              "blockTime": {
+                                "type": "integer",
+                                "example": 1760624353
+                              },
+                              "chainId": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "confirmNumber": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "confirmThreshold": {
+                                "type": "integer",
+                                "example": 4
+                              },
+                              "hash": {
+                                "type": "string",
+                                "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+                              },
+                              "id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "recievedEventTxHash": {
+                                "type": "string",
+                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+                              },
+                              "rejectedEventTxHash": {
+                                "type": "string",
+                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "init",
+                                  "binded",
+                                  "receivedInEvm",
+                                  "approvedInEvm",
+                                  "rejectedInEvm"
+                                ],
+                                "example": "binded"
+                              }
+                            }
+                          }
+                        },
+                        "mined": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "id",
+                              "hash",
+                              "amountSatoshi",
+                              "status",
+                              "blockNumber",
+                              "blockTime",
+                              "confirmNumber",
+                              "confirmThreshold",
+                              "bindedEvmAddress",
+                              "chainId",
+                              "recievedEventTxHash",
+                              "acceptedEventTxHash",
+                              "rejectedEventTxHash"
+                            ],
+                            "properties": {
+                              "InputAddress": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "TresuryAddress": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "acceptedEventTxHash": {
+                                "type": "string",
+                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+                              },
+                              "amountSatoshi": {
+                                "type": "string",
+                                "example": "111000000"
+                              },
+                              "bindedEvmAddress": {
+                                "type": "string",
+                                "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+                              },
+                              "blockNumber": {
+                                "type": "integer",
+                                "example": 919346
+                              },
+                              "blockTime": {
+                                "type": "integer",
+                                "example": 1760624353
+                              },
+                              "chainId": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "confirmNumber": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "confirmThreshold": {
+                                "type": "integer",
+                                "example": 4
+                              },
+                              "hash": {
+                                "type": "string",
+                                "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+                              },
+                              "id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "recievedEventTxHash": {
+                                "type": "string",
+                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+                              },
+                              "rejectedEventTxHash": {
+                                "type": "string",
+                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "init",
+                                  "binded",
+                                  "receivedInEvm",
+                                  "approvedInEvm",
+                                  "rejectedInEvm"
+                                ],
+                                "example": "binded"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "offset": {
+                      "type": "integer",
+                      "default": 0,
+                      "example": 0
+                    },
+                    "total": {
+                      "type": "integer",
+                      "example": 1234
+                    }
+                  }
+                },
+                "msg": {
+                  "description": "business message",
+                  "type": "string",
+                  "example": "ok"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-date": "2025-10-27 14:10:13",
+  "x-description": "This is a goctl generated swagger file.",
+  "x-github": "https://github.com/zeromicro/go-zero",
+  "x-go-zero-doc": "https://go-zero.dev/",
+  "x-goctl-version": "1.9.2"
+}

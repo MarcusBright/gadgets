@@ -1,0 +1,110 @@
+name: ""
+log:
+  servicename: ""
+  mode: ""
+  encoding: ""
+  timeformat: ""
+  path: ""
+  level: ""
+  maxcontentlength: 0
+  compress: false
+  stat: false
+  keepdays: 0
+  stackcooldownmillis: 0
+  maxbackups: 0
+  maxsize: 0
+  rotation: ""
+  filetimeformat: ""
+  fieldkeys:
+    callerkey: ""
+    contentkey: ""
+    durationkey: ""
+    levelkey: ""
+    spankey: ""
+    timestampkey: ""
+    tracekey: ""
+    truncatedkey: ""
+mode: ""
+metricsurl: ""
+prometheus:
+  host: ""
+  port: 0
+  path: ""
+telemetry:
+  name: ""
+  endpoint: ""
+  sampler: 0
+  batcher: ""
+  otlpheaders: {}
+  otlphttppath: ""
+  otlphttpsecure: false
+  disabled: false
+devserver:
+  enabled: false
+  host: ""
+  port: 0
+  metricspath: ""
+  healthpath: ""
+  enablemetrics: false
+  enablepprof: false
+  healthresponse: ""
+shutdown:
+  wrapuptime: 0s
+  waittime: 0s
+profiling:
+  name: ""
+  serveraddr: ""
+  authuser: ""
+  authpassword: ""
+  uploadrate: 0s
+  checkinterval: 0s
+  profilingduration: 0s
+  cputhreshold: 0
+  profiletype:
+    logger: false
+    cpu: false
+    goroutines: false
+    memory: false
+    mutex: false
+    block: false
+host: 0.0.0.0
+port: 8888
+certfile: ""
+keyfile: ""
+verbose: false
+maxconns: 0
+maxbytes: 0
+timeout: 0
+cputhreshold: 0
+signature:
+  strict: false
+  expiry: 0s
+  privatekeys: []
+middlewares:
+  trace: false
+  log: false
+  prometheus: false
+  maxconns: false
+  breaker: false
+  shedding: false
+  timeout: false
+  recover: false
+  metrics: false
+  maxbytes: false
+  gunzip: false
+traceignorepaths: []
+datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
+btcscan:
+  confirmthreshold: 4
+  datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
+  mempoolclient:
+    host: http://127.0.0.1:80
+    request: 2
+    periodsec: 1
+  memscanspec: ""
+  confirmscanspec: ""
+  network: ""
+evmscan:
+  datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
+  chaininfo: []
+  logsscanspec: ""
