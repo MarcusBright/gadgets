@@ -19,6 +19,7 @@ import (
 	"gorm.io/gorm"
 
 	verifier "github.com/bitonicnl/verify-signed-message/pkg"
+	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -52,7 +53,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 		return nil, err
 	}
 
-	valid, err := btcSignVerify(btcTran, string(message), req.SignData.SignAddress, req.Signature)
+	valid, err := l.btcSignVerify(btcTran, string(message), req.SignData.SignAddress, req.Signature)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +112,7 @@ func (l *BindEvmAddressLogic) canBind(req *types.BindEvmAddressSignData) (*model
 	return &btcTran, nil
 }
 
-func btcSignVerify(btcTran *model.BtcTran, message, signAddress, signature string) (bool, error) {
+func (l *BindEvmAddressLogic) btcSignVerify(btcTran *model.BtcTran, message, signAddress, signature string) (bool, error) {
 	inputAddress := func() []string {
 		var addrs []string
 		_ = json.Unmarshal(btcTran.InputUtxo, &addrs)
@@ -120,9 +121,15 @@ func btcSignVerify(btcTran *model.BtcTran, message, signAddress, signature strin
 	if !slices.Contains(inputAddress, signAddress) {
 		return false, errors.New("signer address not in input utxo")
 	}
-	return verifier.Verify(verifier.SignedMessage{
+	net := func() *chaincfg.Params {
+		if l.svcCtx.Config.BTCScan.Network == "signet" {
+			return &chaincfg.SigNetParams
+		}
+		return &chaincfg.MainNetParams
+	}()
+	return verifier.VerifyWithChain(verifier.SignedMessage{
 		Address:   signAddress,
 		Message:   message,
 		Signature: signature,
-	})
+	}, net)
 }

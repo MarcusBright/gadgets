@@ -6,6 +6,8 @@ type Config struct {
 	MempoolClient    MempoolClient
 	MemScanSpec      string
 	ConfirmScanSpec  string
+	//mainnet,signet
+	Network string
 }
 
 type MempoolClient struct {
