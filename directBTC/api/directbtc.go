@@ -40,6 +40,7 @@ func main() {
 	//log
 	if c.LogSlack != "" {
 		logx.AddWriter(logx.NewWriter(slack.NewSlackWriter(c.LogSlack)))
+		logx.AddGlobalFields(logx.Field("server", c.Name))
 	}
 	//cron
 	crontab := crons.New()
