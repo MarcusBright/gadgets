@@ -4,6 +4,7 @@ go 1.25.1
 
 require (
 	github.com/bitonicnl/verify-signed-message v0.8.2
+	github.com/btcsuite/btcd v0.24.2
 	github.com/ethereum/go-ethereum v1.16.5
 	github.com/glebarez/sqlite v1.11.0
 	github.com/joho/godotenv v1.5.1
@@ -22,7 +23,6 @@ require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.20.0 // indirect
-	github.com/btcsuite/btcd v0.24.2 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4 // indirect
 	github.com/btcsuite/btcd/btcutil v1.1.6 // indirect
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.1.0 // indirect
