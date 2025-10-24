@@ -165,7 +165,8 @@ func filterAndMapTrans(trans []mempoolspace.AddressTransaction, treasuryAddress 
 
 func (s *Scanner) UpdateConfirmNumber() {
 	var btcTran []model.BtcTran
-	if err := s.database.Where("status in ?", []string{model.BtcTranStatusInit, model.BtcTranStatusBinded}).
+	if err := s.database.
+		// Where("status in ?", []string{model.BtcTranStatusInit, model.BtcTranStatusBinded}).
 		Where("confirm_number < confirm_threshold").Find(&btcTran).Error; err != nil {
 		logx.Errorf("Find database btcTran failed: %v", err)
 		return
