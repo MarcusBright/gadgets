@@ -17,7 +17,6 @@ type BindEvmAddressSignData struct {
 	EvmAddress      string `json:"evmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
 	EvmChainId      uint64 `json:"evmChainId,example=1"`
 	SignAddress     string `json:"signAddress,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
-	SignType        string `json:"signType,example=btc,options=btc|evm"`
 }
 
 type ListReq struct {

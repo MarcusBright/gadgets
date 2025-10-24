@@ -52,25 +52,12 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 		return nil, err
 	}
 
-	if req.SignData.SignType == "btc" {
-		inputAddress := func() []string {
-			var addrs []string
-			_ = json.Unmarshal(btcTran.InputUtxo, &addrs)
-			return addrs
-		}()
-		if !slices.Contains(inputAddress, req.SignData.SignAddress) {
-			return nil, errors.New("signer address not in input utxo")
-		}
-		valid, err := verifier.Verify(verifier.SignedMessage{
-			Address:   req.SignData.SignAddress,
-			Message:   string(message),
-			Signature: req.Signature,
-		})
-		if err != nil || !valid {
-			return nil, errors.New("invalid signature")
-		}
-	} else {
-		return nil, errors.New("sign type not allowed")
+	valid, err := btcSignVerify(btcTran, string(message), req.SignData.SignAddress, req.Signature)
+	if err != nil {
+		return nil, err
+	}
+	if !valid {
+		return nil, fmt.Errorf("sign not valid")
 	}
 
 	if err := l.svcCtx.DB.Transaction(func(tx *gorm.DB) error {
@@ -106,7 +93,6 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 			EvmAddress:      req.SignData.EvmAddress,
 			EvmChainId:      req.SignData.EvmChainId,
 			SignAddress:     req.SignData.SignAddress,
-			SignType:        req.SignData.SignType,
 		},
 	}
 	return resp, nil
@@ -123,4 +109,20 @@ func (l *BindEvmAddressLogic) canBind(req *types.BindEvmAddressSignData) (*model
 		return nil, fmt.Errorf("transaction status not init/bind, status: %v", btcTran.Status)
 	}
 	return &btcTran, nil
+}
+
+func btcSignVerify(btcTran *model.BtcTran, message, signAddress, signature string) (bool, error) {
+	inputAddress := func() []string {
+		var addrs []string
+		_ = json.Unmarshal(btcTran.InputUtxo, &addrs)
+		return addrs
+	}()
+	if !slices.Contains(inputAddress, signAddress) {
+		return false, errors.New("signer address not in input utxo")
+	}
+	return verifier.Verify(verifier.SignedMessage{
+		Address:   signAddress,
+		Message:   message,
+		Signature: signature,
+	})
 }

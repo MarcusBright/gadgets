@@ -49,8 +49,7 @@
                     "transactionHash",
                     "evmAddress",
                     "evmChainId",
-                    "signAddress",
-                    "signType"
+                    "signAddress"
                   ],
                   "properties": {
                     "evmAddress": {
@@ -64,14 +63,6 @@
                     "signAddress": {
                       "type": "string",
                       "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
-                    },
-                    "signType": {
-                      "type": "string",
-                      "enum": [
-                        "btc",
-                        "evm"
-                      ],
-                      "example": "btc"
                     },
                     "transactionHash": {
                       "type": "string",
@@ -112,14 +103,6 @@
                     "signAddress": {
                       "type": "string",
                       "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
-                    },
-                    "signType": {
-                      "type": "string",
-                      "enum": [
-                        "btc",
-                        "evm"
-                      ],
-                      "example": "btc"
                     },
                     "transactionHash": {
                       "type": "string",
@@ -247,7 +230,7 @@
       }
     }
   },
-  "x-date": "2025-10-22 14:33:42",
+  "x-date": "2025-10-24 10:53:26",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

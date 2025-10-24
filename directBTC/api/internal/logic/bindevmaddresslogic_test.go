@@ -27,7 +27,6 @@ func TestVerifySignError(t *testing.T) {
 			EvmAddress:      "0xE343aB9eEfB1d3991F4CC3d10238225b56526EF4",
 			EvmChainId:      1,
 			SignAddress:     "1GYBGRrWBnAFWEPMGXyo1UqpE5SH2pb6bX",
-			SignType:        "btc",
 		},
 		Signature: "HyiLDcQQ1p2bKmyqM0e5oIBQtKSZds4kJQ+VbZWpr0kYA6Qkam2MlUeTr+lm1teUGHuLapfa43JjyrRqdSA0pxs=",
 	}
@@ -50,7 +49,6 @@ func TestVerifySignNoHash(t *testing.T) {
 			EvmAddress:      "0xE343aB9eEfB1d3991F4CC3d10238225b56526EF4",
 			EvmChainId:      1,
 			SignAddress:     "1GYBGRrWBnAFWEPMGXyo1UqpE5SH2pb6bX",
-			SignType:        "btc",
 		},
 		Signature: "HyiLDcQQ1p2bKmyqM0e5oIBQtKSZds4kJQ+VbZWpr0kYA6Qkam2MlUeTr+lm1teUGHuLapfa43JjyrRqdSA0pxs=",
 	}
@@ -72,7 +70,6 @@ func TestVerifySignApproved(t *testing.T) {
 			EvmAddress:      "0xE343aB9eEfB1d3991F4CC3d10238225b56526EF4",
 			EvmChainId:      1,
 			SignAddress:     "1GYBGRrWBnAFWEPMGXyo1UqpE5SH2pb6bX",
-			SignType:        "btc",
 		},
 		Signature: "HyiLDcQQ1p2bKmyqM0e5oIBQtKSZds4kJQ+VbZWpr0kYA6Qkam2MlUeTr+lm1teUGHuLapfa43JjyrRqdSA0pxs=",
 	}
@@ -94,7 +91,6 @@ func TestVerifySignNotUtxo(t *testing.T) {
 			EvmAddress:      "0xE343aB9eEfB1d3991F4CC3d10238225b56526EF4",
 			EvmChainId:      1,
 			SignAddress:     "1GYBGRrWBnAFWEPMGXyo1UqpE5SH2pb6bX",
-			SignType:        "btc",
 		},
 		Signature: "HyiLDcQQ1p2bKmyqM0e5oIBQtKSZds4kJQ+VbZWpr0kYA6Qkam2MlUeTr+lm1teUGHuLapfa43JjyrRqdSA0pxs=",
 	}
@@ -129,7 +125,6 @@ func TestVerifySignOK(t *testing.T) {
 			EvmAddress:      "0xE343aB9eEfB1d3991F4CC3d10238225b56526EF4",
 			EvmChainId:      1,
 			SignAddress:     "1N3kZRUrEioGxXQbSyCWuBwmoFp4T62i93",
-			SignType:        "btc",
 		},
 		Signature: "IFoYpbJeWuaJewecxS6TEhA6FHeaRqqmDg8BSJWisEIvIhO4kCoZEmArymrGF8H8gareOZfUgVXzYuZdDdRzTiE=",
 	}
