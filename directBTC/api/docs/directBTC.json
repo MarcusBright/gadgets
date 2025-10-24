@@ -39,36 +39,12 @@
             "schema": {
               "type": "object",
               "required": [
-                "signData",
+                "message",
                 "signature"
               ],
               "properties": {
-                "signData": {
-                  "type": "object",
-                  "required": [
-                    "transactionHash",
-                    "evmAddress",
-                    "evmChainId",
-                    "signAddress"
-                  ],
-                  "properties": {
-                    "evmAddress": {
-                      "type": "string",
-                      "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
-                    },
-                    "evmChainId": {
-                      "type": "integer",
-                      "example": 1
-                    },
-                    "signAddress": {
-                      "type": "string",
-                      "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
-                    },
-                    "transactionHash": {
-                      "type": "string",
-                      "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
-                    }
-                  }
+                "message": {
+                  "type": "string"
                 },
                 "signature": {
                   "type": "string",
@@ -230,7 +206,7 @@
       }
     }
   },
-  "x-date": "2025-10-24 10:53:26",
+  "x-date": "2025-10-24 17:28:01",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

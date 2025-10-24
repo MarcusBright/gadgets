@@ -4,19 +4,12 @@
 package types
 
 type BindEvmAddressReq struct {
-	SignData  BindEvmAddressSignData `json:"signData"`
-	Signature string                 `json:"signature,example=H3x5bM2MpXK9MyLLbIGWQjZQNTP6lfuIjmPqMrU7YZ5CCm5bS9L+zCtrfIOJaloDb0mf9QBSEDIs4UCd/jou1VI="`
+	Message   string `json:"message"`
+	Signature string `json:"signature,example=H3x5bM2MpXK9MyLLbIGWQjZQNTP6lfuIjmPqMrU7YZ5CCm5bS9L+zCtrfIOJaloDb0mf9QBSEDIs4UCd/jou1VI="`
 }
 
 type BindEvmAddressResp struct {
-	BindEvmAddressSignData
-}
-
-type BindEvmAddressSignData struct {
-	TransactionHash string `json:"transactionHash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
-	EvmAddress      string `json:"evmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
-	EvmChainId      uint64 `json:"evmChainId,example=1"`
-	SignAddress     string `json:"signAddress,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
+	Message
 }
 
 type ListReq struct {
@@ -27,6 +20,13 @@ type ListReq struct {
 type ListResp struct {
 	PageData
 	Data interface{} `json:"data"`
+}
+
+type Message struct {
+	TransactionHash string `json:"transactionHash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
+	EvmAddress      string `json:"evmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
+	EvmChainId      uint64 `json:"evmChainId,example=1"`
+	SignAddress     string `json:"signAddress,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
 }
 
 type PageData struct {

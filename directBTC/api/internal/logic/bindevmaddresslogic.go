@@ -14,8 +14,7 @@ import (
 	"directBTC/api/internal/types"
 	"directBTC/model"
 
-	"directBTC/pkg/webpki.org/jsoncanonicalizer"
-
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 
 	verifier "github.com/bitonicnl/verify-signed-message/pkg"
@@ -38,22 +37,18 @@ func NewBindEvmAddressLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Bi
 }
 
 func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp *types.BindEvmAddressResp, err error) {
-	btcTran, err := l.canBind(&req.SignData)
+	var message types.Message
+	err = json.Unmarshal([]byte(req.Message), &message)
+	if err != nil {
+		return nil, fmt.Errorf("message unmarshal:%v", err)
+	}
+	btcTran, err := l.canBind(&message)
 	if btcTran == nil || err != nil {
-		l.Errorf("canBind,hash:%v, error: %v", req.SignData.TransactionHash, err)
+		l.Errorf("canBind,hash:%v, error: %v", message.TransactionHash, err)
 		return nil, fmt.Errorf("not found or error:%v", err)
 	}
 
-	message, err := jsoncanonicalizer.Transform(func() []byte {
-		jsonData, _ := json.Marshal(req.SignData)
-		return jsonData
-	}())
-	if err != nil {
-		l.Errorf("jsoncanonicalizer.Transform,hash:%v, error: %v", req.SignData.TransactionHash, err)
-		return nil, err
-	}
-
-	valid, err := l.btcSignVerify(btcTran, string(message), req.SignData.SignAddress, req.Signature)
+	valid, err := l.btcSignVerify(btcTran, req.Message, message.SignAddress, req.Signature)
 	if err != nil {
 		return nil, err
 	}
@@ -62,44 +57,40 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 	}
 
 	if err := l.svcCtx.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.WithContext(l.ctx).Model(&model.BtcTran{}).Where("transaction_hash = ?", req.SignData.TransactionHash).
+		if err := tx.WithContext(l.ctx).Model(&model.BtcTran{}).Where("transaction_hash = ?", message.TransactionHash).
 			Updates(map[string]interface{}{
-				"binded_evm_address": req.SignData.EvmAddress,
-				"chain_id":           req.SignData.EvmChainId,
+				"binded_evm_address": message.EvmAddress,
+				"chain_id":           message.EvmChainId,
 				"status":             model.BtcTranStatusBinded,
 			}).Error; err != nil {
-			l.Errorf("hash:%v, error: %v", req.SignData.TransactionHash, err)
+			l.Errorf("hash:%v, error: %v", message.TransactionHash, err)
 			return err
 		}
 		signData := model.SignData{
-			Message:     message,
+			Message:     datatypes.JSON(req.Message),
 			Signature:   req.Signature,
 			SignType:    model.BTCSignTypeBindAddress,
-			Signer:      req.SignData.SignAddress,
-			BtcTranHash: req.SignData.TransactionHash,
+			Signer:      message.SignAddress,
+			BtcTranHash: message.TransactionHash,
 		}
 		if err := tx.WithContext(l.ctx).Model(&model.SignData{}).Create(&signData).Error; err != nil {
-			l.Errorf("hash:%v, error: %v", req.SignData.TransactionHash, err)
+			l.Errorf("hash:%v, error: %v", message.TransactionHash, err)
 			return err
 		}
 		return nil
 	}); err != nil {
-		l.Errorf("hash:%v, error: %v", req.SignData.TransactionHash, err)
+		l.Errorf("hash:%v, error: %v", message.TransactionHash, err)
 		return nil, err
 	}
 
 	resp = &types.BindEvmAddressResp{
-		BindEvmAddressSignData: types.BindEvmAddressSignData{
-			TransactionHash: req.SignData.TransactionHash,
-			EvmAddress:      req.SignData.EvmAddress,
-			EvmChainId:      req.SignData.EvmChainId,
-			SignAddress:     req.SignData.SignAddress,
-		},
+		Message: message,
 	}
+
 	return resp, nil
 }
 
-func (l *BindEvmAddressLogic) canBind(req *types.BindEvmAddressSignData) (*model.BtcTran, error) {
+func (l *BindEvmAddressLogic) canBind(req *types.Message) (*model.BtcTran, error) {
 	var btcTran model.BtcTran
 	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{}).Where("transaction_hash = ?", req.TransactionHash).First(&btcTran).Error; err != nil {
 		l.Errorf("hash:%v, error: %v", req.TransactionHash, err)
