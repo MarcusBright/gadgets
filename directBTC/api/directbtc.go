@@ -10,6 +10,7 @@ import (
 	"directBTC/api/internal/config"
 	"directBTC/api/internal/handler"
 	"directBTC/api/internal/svc"
+	"directBTC/pkg/slack"
 	"directBTC/service/btcscan"
 	"directBTC/service/crons"
 	"directBTC/service/evmscan"
@@ -36,6 +37,10 @@ func main() {
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.PrintRoutes()
+	//log
+	if c.LogSlack != "" {
+		logx.AddWriter(logx.NewWriter(slack.NewSlackWriter(c.LogSlack)))
+	}
 	//cron
 	crontab := crons.New()
 	btcScan := btcscan.NewScanner(&c.BTCScan)
