@@ -37,8 +37,8 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 			Offset: req.Offset,
 		},
 	}
-	var memBtcTask, btcTasks []model.BtcTran
-	_ = l.svcCtx.MemDB.WithContext(l.ctx).Model(&model.BtcTran{}).Find(&memBtcTask).Error
+	var /*memBtcTask,*/ btcTasks []model.BtcTran
+	// _ = l.svcCtx.MemDB.WithContext(l.ctx).Model(&model.BtcTran{}).Find(&memBtcTask).Error
 
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
 	if len(req.Status) != 0 {
@@ -56,10 +56,7 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 		return nil, err
 	}
 
-	resp.Data = types.Tasks{
-		MemPool: ItemsToTask(memBtcTask),
-		Mined:   ItemsToTask(btcTasks),
-	}
+	resp.Data = ItemsToTask(btcTasks)
 
 	return
 }

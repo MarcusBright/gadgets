@@ -43,7 +43,7 @@ func TestNewTrans(t *testing.T) {
 	scanner.NewTrans()
 	//get all btc transactions from memoryDB
 	var btcTran []model.BtcTran
-	logx.Must(scanner.memoryDB.Find(&btcTran).Error)
+	// logx.Must(scanner.memoryDB.Find(&btcTran).Error)
 	t.Log(func() string {
 		jsonStr, _ := json.Marshal(btcTran)
 		return string(jsonStr)

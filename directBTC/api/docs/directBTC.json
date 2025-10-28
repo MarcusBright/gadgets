@@ -179,198 +179,95 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "object",
-                      "required": [
-                        "memPool",
-                        "mined"
-                      ],
-                      "properties": {
-                        "memPool": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "required": [
-                              "id",
-                              "hash",
-                              "amountSatoshi",
-                              "status",
-                              "blockNumber",
-                              "blockTime",
-                              "confirmNumber",
-                              "confirmThreshold",
-                              "bindedEvmAddress",
-                              "chainId",
-                              "recievedEventTxHash",
-                              "acceptedEventTxHash",
-                              "rejectedEventTxHash"
-                            ],
-                            "properties": {
-                              "InputAddress": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                }
-                              },
-                              "TresuryAddress": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                }
-                              },
-                              "acceptedEventTxHash": {
-                                "type": "string",
-                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                              },
-                              "amountSatoshi": {
-                                "type": "string",
-                                "example": "111000000"
-                              },
-                              "bindedEvmAddress": {
-                                "type": "string",
-                                "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
-                              },
-                              "blockNumber": {
-                                "type": "integer",
-                                "example": 919346
-                              },
-                              "blockTime": {
-                                "type": "integer",
-                                "example": 1760624353
-                              },
-                              "chainId": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "confirmNumber": {
-                                "type": "integer",
-                                "example": 2
-                              },
-                              "confirmThreshold": {
-                                "type": "integer",
-                                "example": 4
-                              },
-                              "hash": {
-                                "type": "string",
-                                "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
-                              },
-                              "id": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "recievedEventTxHash": {
-                                "type": "string",
-                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                              },
-                              "rejectedEventTxHash": {
-                                "type": "string",
-                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                              },
-                              "status": {
-                                "type": "string",
-                                "enum": [
-                                  "init",
-                                  "binded",
-                                  "receivedInEvm",
-                                  "approvedInEvm",
-                                  "rejectedInEvm"
-                                ],
-                                "example": "binded"
-                              }
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "hash",
+                          "amountSatoshi",
+                          "status",
+                          "blockNumber",
+                          "blockTime",
+                          "confirmNumber",
+                          "confirmThreshold",
+                          "bindedEvmAddress",
+                          "chainId",
+                          "recievedEventTxHash",
+                          "acceptedEventTxHash",
+                          "rejectedEventTxHash"
+                        ],
+                        "properties": {
+                          "InputAddress": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
                             }
-                          }
-                        },
-                        "mined": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "required": [
-                              "id",
-                              "hash",
-                              "amountSatoshi",
-                              "status",
-                              "blockNumber",
-                              "blockTime",
-                              "confirmNumber",
-                              "confirmThreshold",
-                              "bindedEvmAddress",
-                              "chainId",
-                              "recievedEventTxHash",
-                              "acceptedEventTxHash",
-                              "rejectedEventTxHash"
-                            ],
-                            "properties": {
-                              "InputAddress": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                }
-                              },
-                              "TresuryAddress": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                }
-                              },
-                              "acceptedEventTxHash": {
-                                "type": "string",
-                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                              },
-                              "amountSatoshi": {
-                                "type": "string",
-                                "example": "111000000"
-                              },
-                              "bindedEvmAddress": {
-                                "type": "string",
-                                "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
-                              },
-                              "blockNumber": {
-                                "type": "integer",
-                                "example": 919346
-                              },
-                              "blockTime": {
-                                "type": "integer",
-                                "example": 1760624353
-                              },
-                              "chainId": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "confirmNumber": {
-                                "type": "integer",
-                                "example": 2
-                              },
-                              "confirmThreshold": {
-                                "type": "integer",
-                                "example": 4
-                              },
-                              "hash": {
-                                "type": "string",
-                                "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
-                              },
-                              "id": {
-                                "type": "integer",
-                                "example": 1
-                              },
-                              "recievedEventTxHash": {
-                                "type": "string",
-                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                              },
-                              "rejectedEventTxHash": {
-                                "type": "string",
-                                "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                              },
-                              "status": {
-                                "type": "string",
-                                "enum": [
-                                  "init",
-                                  "binded",
-                                  "receivedInEvm",
-                                  "approvedInEvm",
-                                  "rejectedInEvm"
-                                ],
-                                "example": "binded"
-                              }
+                          },
+                          "TresuryAddress": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
                             }
+                          },
+                          "acceptedEventTxHash": {
+                            "type": "string",
+                            "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+                          },
+                          "amountSatoshi": {
+                            "type": "string",
+                            "example": "111000000"
+                          },
+                          "bindedEvmAddress": {
+                            "type": "string",
+                            "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+                          },
+                          "blockNumber": {
+                            "type": "integer",
+                            "example": 919346
+                          },
+                          "blockTime": {
+                            "type": "integer",
+                            "example": 1760624353
+                          },
+                          "chainId": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "confirmNumber": {
+                            "type": "integer",
+                            "example": 2
+                          },
+                          "confirmThreshold": {
+                            "type": "integer",
+                            "example": 4
+                          },
+                          "hash": {
+                            "type": "string",
+                            "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+                          },
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "recievedEventTxHash": {
+                            "type": "string",
+                            "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+                          },
+                          "rejectedEventTxHash": {
+                            "type": "string",
+                            "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "init",
+                              "binded",
+                              "receivedInEvm",
+                              "approvedInEvm",
+                              "rejectedInEvm"
+                            ],
+                            "example": "binded"
                           }
                         }
                       }
@@ -402,7 +299,7 @@
       }
     }
   },
-  "x-date": "2025-10-27 14:10:13",
+  "x-date": "2025-10-28 10:03:04",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

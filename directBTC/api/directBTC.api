@@ -31,12 +31,12 @@ type (
 	}
 	TaskListResp {
 		PageData
-		Data Tasks `json:"data"`
+		Data []Task `json:"data"`
 	}
-	Tasks {
-		MemPool []Task `json:"memPool"`
-		Mined   []Task `json:"mined"`
-	}
+	// Tasks {
+	//  MemPool []Task `json:"memPool"`
+	//  Mined   []Task `json:"mined"`
+	// }
 	Task {
 		ID                  uint64   `json:"id,example=1"`
 		Hash                string   `json:"hash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`

@@ -11,7 +11,6 @@ import (
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/logx"
 
-	"github.com/glebarez/sqlite"
 	"gorm.io/datatypes"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -21,8 +20,8 @@ import (
 type Scanner struct {
 	client   *mempoolspace.Client
 	database *gorm.DB
-	memoryDB *gorm.DB
-	config   *config.Config
+	// memoryDB *gorm.DB
+	config *config.Config
 }
 
 func NewScanner(c *config.Config) *Scanner {
@@ -31,19 +30,19 @@ func NewScanner(c *config.Config) *Scanner {
 	})
 	logx.Must(err)
 
-	memoryDB, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
-		Logger: gormz.NewGormLogger(),
-	})
-	logx.Must(err)
+	// memoryDB, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
+	// 	Logger: gormz.NewGormLogger(),
+	// })
+	// logx.Must(err)
 	// logx.Must(memoryDB.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci").
 	// 	AutoMigrate(&model.BtcTran{}))
-	logx.Must(memoryDB.AutoMigrate(&model.BtcTran{}))
+	// logx.Must(memoryDB.AutoMigrate(&model.BtcTran{}))
 
 	return &Scanner{
 		client:   mempoolspace.NewClient(c.MempoolClient.Host, c.MempoolClient.Request, c.MempoolClient.PeriodSec),
 		database: db,
-		memoryDB: memoryDB,
-		config:   c,
+		// memoryDB: memoryDB,
+		config: c,
 	}
 }
 
@@ -55,7 +54,7 @@ func (s *Scanner) NewTrans() {
 	}
 	logx.Infof("GetAllBtcAddress: %v", len(btcAddress))
 
-	var mempoolTrans []model.BtcTran
+	// var mempoolTrans []model.BtcTran
 	for _, addr := range btcAddress {
 		logx.Infof("GetAddressNewTransactions address: %s", addr.Address)
 		txs, err := s.client.GetAddressNewTransactions(addr.Address, addr.Txhash)
@@ -78,7 +77,7 @@ func (s *Scanner) NewTrans() {
 		}), s.config.ConfirmThreshold)
 		logx.Infof("GetAddressNewTransactions mempoolGroup: %d, minedGroup: %d, minedAddrTrans: %d, mempoolAddrTrans: %d",
 			len(mempoolGroup), len(minedGroup), len(minedAddrTrans), len(mempoolAddrTrans))
-		mempoolTrans = append(mempoolTrans, mempoolAddrTrans...)
+		// mempoolTrans = append(mempoolTrans, mempoolAddrTrans...)
 		if len(minedGroup) == 0 {
 			continue
 		}
@@ -98,7 +97,7 @@ func (s *Scanner) NewTrans() {
 			logx.Errorf("CreateInBatches mined failed: %v", err)
 		}
 	}
-	if err := s.memoryDB.Transaction(func(tx *gorm.DB) error {
+	/*if err := s.memoryDB.Transaction(func(tx *gorm.DB) error {
 		// trucate memoryDB
 		// DELETE FROM Users;
 		//UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE name = 'Users';
@@ -115,7 +114,7 @@ func (s *Scanner) NewTrans() {
 		return nil
 	}); err != nil {
 		logx.Errorf("Truncate mempoolTrans failed: %v", err)
-	}
+	}*/
 }
 
 func filterAndMapTrans(trans []mempoolspace.AddressTransaction, treasuryAddress []string, confirmThreshold uint64) []model.BtcTran {

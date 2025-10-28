@@ -56,10 +56,5 @@ type TaskListReq struct {
 
 type TaskListResp struct {
 	PageData
-	Data Tasks `json:"data"`
-}
-
-type Tasks struct {
-	MemPool []Task `json:"memPool"`
-	Mined   []Task `json:"mined"`
+	Data []Task `json:"data"`
 }
