@@ -84,7 +84,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 			BtcAddress:       message.SignAddress,
 		}
 		if err := tx.WithContext(l.ctx).Model(&model.BindEvmSign{}).Create(&signData).Error; err != nil {
-			l.Infof("binded:%v", signData.BtcAddress)
+			l.Errorf("binded:%v", signData.BtcAddress)
 			return err
 		}
 		return nil
