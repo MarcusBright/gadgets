@@ -41,6 +41,9 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 	// _ = l.svcCtx.MemDB.WithContext(l.ctx).Model(&model.BtcTran{}).Find(&memBtcTask).Error
 
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
+	if req.Address != "" {
+		sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", req.Address)
+	}
 	if len(req.Status) != 0 {
 		sql.Where("status IN ?", req.Status)
 		if slices.Contains(req.Status, model.BtcTranStatusRecievedInEvm) {

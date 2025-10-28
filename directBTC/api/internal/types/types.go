@@ -53,6 +53,7 @@ type TaskListReq struct {
 	ListReq
 	Status   []string `json:"status,optional,options=init|binded|receivedInEvm|approvedInEvm|rejectedInEvm"`
 	OrderDir string   `json:"orderDir,options=asc|desc,default=desc"`
+	Address  string   `json:"address,optional"`
 }
 
 type TaskListResp struct {
