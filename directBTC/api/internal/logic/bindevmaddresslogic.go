@@ -74,7 +74,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 			}).Error; err != nil {
 			l.Errorf("message:%v, error: %v", message, err)
 			return err
-		}
+		} //only one evmChain, multi evm chain need bind
 		signData := model.BindEvmSign{
 			Message:          req.Message,
 			Signature:        req.Signature,
@@ -84,7 +84,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 			BtcAddress:       message.SignAddress,
 		}
 		if err := tx.WithContext(l.ctx).Model(&model.BindEvmSign{}).Create(&signData).Error; err != nil {
-			l.Errorf("binded:%v", signData.BtcAddress)
+			l.Infof("binded:%v", signData.BtcAddress)
 			return err
 		}
 		return nil
