@@ -16,13 +16,19 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/task/bind",
-				Handler: BindEvmAddressHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
 				Path:    "/task/list",
 				Handler: GetTaskListHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/evm/bind",
+				Handler: BindEvmAddressHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api/v1"),

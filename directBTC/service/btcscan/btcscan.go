@@ -69,12 +69,12 @@ func (s *Scanner) NewTrans() {
 			return "mempool"
 		})
 		var minedGroup, mempoolGroup = group["mined"], group["mempool"]
-		minedAddrTrans := filterAndMapTrans(minedGroup, lo.Map(btcAddress, func(item model.Cursor, _ int) string {
+		minedAddrTrans := s.filterAndMapTrans(minedGroup, lo.Map(btcAddress, func(item model.Cursor, _ int) string {
 			return item.Address
-		}), s.config.ConfirmThreshold, s.config.FeeSatoshi)
-		mempoolAddrTrans := filterAndMapTrans(mempoolGroup, lo.Map(btcAddress, func(item model.Cursor, _ int) string {
+		}))
+		mempoolAddrTrans := s.filterAndMapTrans(mempoolGroup, lo.Map(btcAddress, func(item model.Cursor, _ int) string {
 			return item.Address
-		}), s.config.ConfirmThreshold, s.config.FeeSatoshi)
+		}))
 		logx.Infof("GetAddressNewTransactions mempoolGroup: %d, minedGroup: %d, minedAddrTrans: %d, mempoolAddrTrans: %d",
 			len(mempoolGroup), len(minedGroup), len(minedAddrTrans), len(mempoolAddrTrans))
 		// mempoolTrans = append(mempoolTrans, mempoolAddrTrans...)
@@ -117,7 +117,7 @@ func (s *Scanner) NewTrans() {
 	}*/
 }
 
-func filterAndMapTrans(trans []mempoolspace.AddressTransaction, treasuryAddress []string, confirmThreshold uint64, fee int64) []model.BtcTran {
+func (s *Scanner) filterAndMapTrans(trans []mempoolspace.AddressTransaction, treasuryAddress []string) []model.BtcTran {
 	return lo.FilterMap(trans, func(item mempoolspace.AddressTransaction, _ int) (model.BtcTran, bool) {
 		if _, _, in := lo.FindIndexOf(item.Vin, func(v mempoolspace.Vin) bool {
 			return lo.Contains(treasuryAddress, v.Prevout.ScriptpubkeyAddress)
@@ -134,19 +134,20 @@ func filterAndMapTrans(trans []mempoolspace.AddressTransaction, treasuryAddress 
 				treasuryAddressIn = append(treasuryAddressIn, v.ScriptpubkeyAddress)
 			}
 		}
-		amount = amount - fee
+		amount = amount - s.config.FeeSatoshi
 		if amount <= 0 || len(treasuryAddressIn) == 0 {
 			logx.Errorf("treasuryAddress amount is 0 or lower,address:%s, txid: %s", treasuryAddress, item.Txid)
 			return model.BtcTran{}, false
 		}
-		//TODO other filter
-		return model.BtcTran{
+		evmAddress, ChainId := s.getBindEvm(item.Vin[0].Prevout.ScriptpubkeyAddress)
+		tran := model.BtcTran{
 			TransactionHash: item.Txid,
 			TreasuryAddress: func() datatypes.JSON {
 				b, _ := json.Marshal(lo.Uniq(treasuryAddressIn))
 				return datatypes.JSON(b)
 			}(),
 			AmountSatoshi: fmt.Sprintf("%d", amount),
+			FeeSatoshi:    fmt.Sprintf("%d", s.config.FeeSatoshi),
 			InputUtxo: func() datatypes.JSON {
 				utxoAddress := lo.Map(item.Vin, func(item mempoolspace.Vin, _ int) string {
 					return item.Prevout.ScriptpubkeyAddress
@@ -154,13 +155,32 @@ func filterAndMapTrans(trans []mempoolspace.AddressTransaction, treasuryAddress 
 				b, _ := json.Marshal(utxoAddress)
 				return datatypes.JSON(b)
 			}(),
-			Status:           model.BtcTranStatusInit,
-			BlockNumber:      item.Status.BlockHeight,
-			BlockTime:        item.Status.BlockTime,
-			ConfirmNumber:    0,
-			ConfirmThreshold: confirmThreshold,
-		}, true
+			Status:            model.BtcTranStatusInit,
+			BlockNumber:       item.Status.BlockHeight,
+			BlockTime:         item.Status.BlockTime,
+			ConfirmNumber:     0,
+			ConfirmThreshold:  s.config.ConfirmThreshold,
+			BindedEvmAddress:  evmAddress,
+			ChainId:           ChainId,
+			RecievedEvmTxHash: "",
+			AcceptedEvmTxHash: "",
+			RejectedEvmTxHash: "",
+			ProcessIdx:        0,
+		}
+		if tran.BindedEvmAddress != "" && tran.ChainId != 0 {
+			tran.Status = model.BtcTranStatusBinded
+		}
+		return tran, true
 	})
+}
+
+func (s *Scanner) getBindEvm(btcAddress string) (evmAddress string, chainId uint) {
+	var bindedData model.BindEvmSign
+	err := s.database.Model(&model.BindEvmSign{}).Where("btc_address = ?", btcAddress).First(&bindedData).Error
+	if err != nil {
+		return
+	}
+	return bindedData.BindedEvmAddress, bindedData.ChainId
 }
 
 func (s *Scanner) UpdateConfirmNumber() {
@@ -190,8 +210,13 @@ func (s *Scanner) UpdateConfirmNumber() {
 			logx.Errorf("tx not confirmed, txid: %s", tran.TransactionHash)
 			continue
 		}
-		confirmedNumber := latestHeight - tx.Status.BlockHeight
-		btcTran[k].ConfirmNumber = confirmedNumber
+		confirmedNumber := int64(latestHeight) - int64(tx.Status.BlockHeight)
+		if confirmedNumber <= 0 {
+			logx.Errorf("confrimedNumber[%d], latestHeight:%d, tx.BlockHeight:%d", confirmedNumber,
+				latestHeight, tx.Status.BlockHeight)
+			continue
+		}
+		btcTran[k].ConfirmNumber = uint64(confirmedNumber)
 		btcTran[k].BlockNumber = tx.Status.BlockHeight
 	}
 	if err := s.database.Save(&btcTran).Error; err != nil {

@@ -34,18 +34,14 @@ type BtcTran struct {
 	ProcessIdx        uint64 `gorm:"default:0"` //when recievedEvm
 }
 
-const (
-	BTCSignTypeBindAddress = "bindAddress"
-)
-
-type SignData struct {
+type BindEvmSign struct {
 	gorm.Model
-	Message     datatypes.JSON `gorm:"not null"`
-	Signature   string         `gorm:"size:255;default:''"`
-	SignType    string         `gorm:"size:255;default:''"`
-	Signer      string         `gorm:"size:255;default:''"`
-	BtcTranHash string         `gorm:"size:255;default:''"`
-	// BtcTreasuryAddress string         `gorm:"size:255"`
+	Message          string `gorm:"not null;"`
+	Signature        string `gorm:"size:255;default:''"`
+	Signer           string `gorm:"size:255;default:''"`
+	BtcAddress       string `gorm:"size:255;default:'';index:evm_chain_btc,unique"`
+	ChainId          uint   `gorm:"default:0;index:evm_chain_btc"`
+	BindedEvmAddress string `gorm:"size:255;default:'';index:evm_chain_btc"`
 }
 
 const (

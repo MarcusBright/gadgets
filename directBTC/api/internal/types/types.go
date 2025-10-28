@@ -18,10 +18,10 @@ type ListReq struct {
 }
 
 type Message struct {
-	TransactionHash string `json:"transactionHash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
-	EvmAddress      string `json:"evmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
-	EvmChainId      uint64 `json:"evmChainId,example=1"`
-	SignAddress     string `json:"signAddress,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
+	EvmAddress  string `json:"evmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
+	EvmChainId  uint64 `json:"evmChainId,example=1"`
+	SignAddress string `json:"signAddress,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
+	Ts          uint64 `json:"ts,example=12323323"`
 }
 
 type PageData struct {

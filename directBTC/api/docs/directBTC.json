@@ -15,7 +15,7 @@
   },
   "basePath": "/",
   "paths": {
-    "/api/v1/task/bind": {
+    "/api/v1/evm/bind": {
       "post": {
         "consumes": [
           "application/json"
@@ -27,7 +27,7 @@
           "https"
         ],
         "tags": [
-          "task"
+          "evm"
         ],
         "summary": "BindEvmAddress",
         "operationId": "bindEvmAddress",
@@ -80,9 +80,9 @@
                       "type": "string",
                       "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
                     },
-                    "transactionHash": {
-                      "type": "string",
-                      "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+                    "ts": {
+                      "type": "integer",
+                      "example": 12323323
                     }
                   }
                 },
@@ -304,7 +304,7 @@
       }
     }
   },
-  "x-date": "2025-10-28 10:15:54",
+  "x-date": "2025-10-28 15:29:44",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",
