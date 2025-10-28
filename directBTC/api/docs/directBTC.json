@@ -186,6 +186,7 @@
                           "id",
                           "hash",
                           "amountSatoshi",
+                          "feeSatoshi",
                           "status",
                           "blockNumber",
                           "blockTime",
@@ -241,6 +242,10 @@
                           "confirmThreshold": {
                             "type": "integer",
                             "example": 4
+                          },
+                          "feeSatoshi": {
+                            "type": "string",
+                            "example": "100"
                           },
                           "hash": {
                             "type": "string",
@@ -299,7 +304,7 @@
       }
     }
   },
-  "x-date": "2025-10-28 10:03:04",
+  "x-date": "2025-10-28 10:15:54",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

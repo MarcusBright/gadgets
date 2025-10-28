@@ -10,6 +10,7 @@ create table btc_trans
     transaction_hash     varchar(255)    default ''     null,
     treasury_address     json                           not null,
     amount_satoshi       varchar(191)    default '0'    null,
+    fee_satoshi          varchar(191)    default '0'    null,
     input_utxo           json                           not null,
     status               varchar(191)    default 'init' null,
     block_number         bigint unsigned default '0'    null,

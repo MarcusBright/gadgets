@@ -18,6 +18,7 @@ type BtcTran struct {
 	TransactionHash  string         `gorm:"size:255;default:'';index:hash,unique"`
 	TreasuryAddress  datatypes.JSON `gorm:"not null"` //[]string, address
 	AmountSatoshi    string         `gorm:"default:'0'"`
+	FeeSatoshi       string         `gorm:"default:'0'"`
 	InputUtxo        datatypes.JSON `gorm:"not null"` //[]string, address
 	Status           string         `gorm:"default:'init'"`
 	BlockNumber      uint64         `gorm:"default:0"`

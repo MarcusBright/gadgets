@@ -97,6 +97,7 @@ datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=Tru
 btcscan:
   confirmthreshold: 4
   datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
+  feesatoshi: 100
   mempoolclient:
     host: http://127.0.0.1:80
     request: 2

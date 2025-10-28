@@ -72,6 +72,7 @@ func ItemsToTask(item []model.BtcTran) []types.Task {
 				return addrs
 			}(),
 			AmountSatoshi: item.AmountSatoshi,
+			FeeSatoshi:    item.FeeSatoshi,
 			InputAddress: func() []string {
 				var addrs []string
 				_ = json.Unmarshal(item.InputUtxo, &addrs)

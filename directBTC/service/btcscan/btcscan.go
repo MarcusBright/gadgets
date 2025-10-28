@@ -71,10 +71,10 @@ func (s *Scanner) NewTrans() {
 		var minedGroup, mempoolGroup = group["mined"], group["mempool"]
 		minedAddrTrans := filterAndMapTrans(minedGroup, lo.Map(btcAddress, func(item model.Cursor, _ int) string {
 			return item.Address
-		}), s.config.ConfirmThreshold)
+		}), s.config.ConfirmThreshold, s.config.FeeSatoshi)
 		mempoolAddrTrans := filterAndMapTrans(mempoolGroup, lo.Map(btcAddress, func(item model.Cursor, _ int) string {
 			return item.Address
-		}), s.config.ConfirmThreshold)
+		}), s.config.ConfirmThreshold, s.config.FeeSatoshi)
 		logx.Infof("GetAddressNewTransactions mempoolGroup: %d, minedGroup: %d, minedAddrTrans: %d, mempoolAddrTrans: %d",
 			len(mempoolGroup), len(minedGroup), len(minedAddrTrans), len(mempoolAddrTrans))
 		// mempoolTrans = append(mempoolTrans, mempoolAddrTrans...)
@@ -117,7 +117,7 @@ func (s *Scanner) NewTrans() {
 	}*/
 }
 
-func filterAndMapTrans(trans []mempoolspace.AddressTransaction, treasuryAddress []string, confirmThreshold uint64) []model.BtcTran {
+func filterAndMapTrans(trans []mempoolspace.AddressTransaction, treasuryAddress []string, confirmThreshold uint64, fee int64) []model.BtcTran {
 	return lo.FilterMap(trans, func(item mempoolspace.AddressTransaction, _ int) (model.BtcTran, bool) {
 		if _, _, in := lo.FindIndexOf(item.Vin, func(v mempoolspace.Vin) bool {
 			return lo.Contains(treasuryAddress, v.Prevout.ScriptpubkeyAddress)
@@ -134,8 +134,9 @@ func filterAndMapTrans(trans []mempoolspace.AddressTransaction, treasuryAddress 
 				treasuryAddressIn = append(treasuryAddressIn, v.ScriptpubkeyAddress)
 			}
 		}
-		if amount == 0 || len(treasuryAddressIn) == 0 {
-			logx.Infof("treasuryAddress amount is 0,address:%s, txid: %s", treasuryAddress, item.Txid)
+		amount = amount - fee
+		if amount <= 0 || len(treasuryAddressIn) == 0 {
+			logx.Errorf("treasuryAddress amount is 0 or lower,address:%s, txid: %s", treasuryAddress, item.Txid)
 			return model.BtcTran{}, false
 		}
 		//TODO other filter
