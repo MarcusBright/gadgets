@@ -44,14 +44,9 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 	if err != nil {
 		return nil, fmt.Errorf("message unmarshal:%v", err)
 	}
-	//check param
-	if message.EvmAddress == "" || message.EvmChainId == 0 || message.SignAddress == "" {
-		return nil, fmt.Errorf("message param error")
-	}
-	if !slices.ContainsFunc(l.svcCtx.Config.EvmScan.ChainInfo, func(c evmscanconfig.ChainInfo) bool {
-		return message.EvmChainId == uint64(c.Client.ChainId)
-	}) {
-		return nil, fmt.Errorf("chainid not allowed")
+
+	if err := l.canBind(&message); err != nil {
+		return nil, err
 	}
 
 	valid, err := l.btcSignVerify(req.Message, message.SignAddress, req.Signature)
@@ -65,7 +60,8 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 	if err := l.svcCtx.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.WithContext(l.ctx).Model(&model.BtcTran{}).
 			//5.7+
-			Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", message.SignAddress).
+			Where("transaction_hash = ?", message.TransactionHash).
+			// Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", message.SignAddress).
 			Where("status = ?", model.BtcTranStatusInit).
 			Updates(map[string]interface{}{
 				"binded_evm_address": message.EvmAddress,
@@ -82,6 +78,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 			BindedEvmAddress: message.EvmAddress,
 			ChainId:          uint(message.EvmChainId),
 			BtcAddress:       message.SignAddress,
+			BtcTranHash:      message.TransactionHash,
 		}
 		if err := tx.WithContext(l.ctx).Model(&model.BindEvmSign{}).Create(&signData).Error; err != nil {
 			l.Errorf("binded:%v", signData.BtcAddress)
@@ -100,6 +97,40 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 	}
 
 	return resp, nil
+}
+
+func (l *BindEvmAddressLogic) canBind(req *types.Message) error {
+	//check param
+	if req.EvmAddress == "" || req.EvmChainId == 0 || req.SignAddress == "" || req.TransactionHash == "" || req.Amount == 0 {
+		return fmt.Errorf("message param error")
+	}
+	if !slices.ContainsFunc(l.svcCtx.Config.EvmScan.ChainInfo, func(c evmscanconfig.ChainInfo) bool {
+		return req.EvmChainId == uint64(c.Client.ChainId)
+	}) {
+		return fmt.Errorf("chainid not allowed")
+	}
+
+	var btcTran model.BtcTran
+	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{}).
+		Where("transaction_hash = ?", req.TransactionHash).First(&btcTran).Error; err != nil {
+		l.Errorf("hash:%v, error: %v", req.TransactionHash, err)
+		return err
+	}
+	if btcTran.Status != model.BtcTranStatusInit || btcTran.BindedEvmAddress != "" || btcTran.ChainId != 0 {
+		return fmt.Errorf("hash has binded:%v", btcTran.Status)
+	}
+	if btcTran.AmountSatoshi != fmt.Sprintf("%d", req.Amount) {
+		return fmt.Errorf("amount not match, tran:%v, req:%v", btcTran.AmountSatoshi, req.Amount)
+	}
+	inputAddress := func() []string {
+		var addrs []string
+		_ = json.Unmarshal(btcTran.InputUtxo, &addrs)
+		return addrs
+	}()
+	if inputAddress[0] != req.SignAddress {
+		return errors.New("signer address not equal input[0]")
+	}
+	return nil
 }
 
 func (l *BindEvmAddressLogic) btcSignVerify(message, signAddress, signature string) (bool, error) {

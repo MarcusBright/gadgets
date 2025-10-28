@@ -14,8 +14,9 @@ create table bind_evm_signs
     btc_address        varchar(255)    default ''  null,
     chain_id           bigint unsigned default '0' null,
     binded_evm_address varchar(255)    default ''  null,
-    constraint evm_chain_btc
-        unique (btc_address, chain_id, binded_evm_address)
+    btc_tran_hash      varchar(255)    default ''  null,
+    constraint hash
+        unique (btc_tran_hash)
 );
 
 create index idx_bind_evm_signs_deleted_at
@@ -44,6 +45,7 @@ create table btc_trans
     accepted_evm_tx_hash varchar(255)    default ''     null,
     rejected_evm_tx_hash varchar(255)    default ''     null,
     process_idx          bigint unsigned default '0'    null,
+    signature            varchar(255)    default ''     null,
     constraint hash
         unique (transaction_hash)
 );

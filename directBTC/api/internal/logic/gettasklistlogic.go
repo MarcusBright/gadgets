@@ -50,6 +50,7 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 			sql.Order("process_idx asc")
 		}
 	}
+	sql.Where("confirm_number >= confirm_threshold")
 	if req.OrderDir == "desc" {
 		sql.Order("block_number desc")
 	} else {
@@ -81,16 +82,17 @@ func ItemsToTask(item []model.BtcTran) []types.Task {
 				_ = json.Unmarshal(item.InputUtxo, &addrs)
 				return addrs
 			}(),
-			Status:              item.Status,
-			BlockNumber:         item.BlockNumber,
-			BlockTime:           item.BlockTime,
-			ConfirmNumber:       item.ConfirmNumber,
-			ConfirmThreshold:    item.ConfirmThreshold,
+			Status:      item.Status,
+			BlockNumber: item.BlockNumber,
+			BlockTime:   item.BlockTime,
+			// ConfirmNumber:       item.ConfirmNumber,
+			// ConfirmThreshold:    item.ConfirmThreshold,
 			BindedEvmAddress:    item.BindedEvmAddress,
 			ChainId:             uint64(item.ChainId),
 			RecievedEventTxHash: item.RecievedEvmTxHash,
 			AcceptedEventTxHash: item.AcceptedEvmTxHash,
 			RejectedEventTxHash: item.RejectedEvmTxHash,
+			Signature:           item.Signature,
 		}
 	})
 }

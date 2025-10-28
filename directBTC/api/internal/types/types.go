@@ -18,10 +18,12 @@ type ListReq struct {
 }
 
 type Message struct {
-	EvmAddress  string `json:"evmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
-	EvmChainId  uint64 `json:"evmChainId,example=1"`
-	SignAddress string `json:"signAddress,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
-	Ts          uint64 `json:"ts,example=12323323"`
+	EvmAddress      string `json:"evmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
+	EvmChainId      uint64 `json:"evmChainId,example=1"`
+	Amount          uint64 `json:"amount,example=1200300000"`
+	SignAddress     string `json:"signAddress,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
+	TransactionHash string `json:"transactionHash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
+	Ts              uint64 `json:"ts,example=12323323"`
 }
 
 type PageData struct {
@@ -40,13 +42,12 @@ type Task struct {
 	Status              string   `json:"status,example=binded,options=init|binded|receivedInEvm|approvedInEvm|rejectedInEvm"`
 	BlockNumber         uint64   `json:"blockNumber,example=919346"`
 	BlockTime           uint64   `json:"blockTime,example=1760624353"`
-	ConfirmNumber       uint64   `json:"confirmNumber,example=2"`
-	ConfirmThreshold    uint64   `json:"confirmThreshold,example=4"`
 	BindedEvmAddress    string   `json:"bindedEvmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
 	ChainId             uint64   `json:"chainId,example=1"`
 	RecievedEventTxHash string   `json:"recievedEventTxHash,example=0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"`
 	AcceptedEventTxHash string   `json:"acceptedEventTxHash,example=0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"`
 	RejectedEventTxHash string   `json:"rejectedEventTxHash,example=0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"`
+	Signature           string   `json:"signature,example=0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"`
 }
 
 type TaskListReq struct {

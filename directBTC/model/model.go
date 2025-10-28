@@ -32,6 +32,7 @@ type BtcTran struct {
 	AcceptedEvmTxHash string `gorm:"size:255;default:''"`
 	RejectedEvmTxHash string `gorm:"size:255;default:''"`
 	ProcessIdx        uint64 `gorm:"default:0"` //when recievedEvm
+	Signature         string `gorm:"size:255;default:''"`
 }
 
 type BindEvmSign struct {
@@ -39,9 +40,10 @@ type BindEvmSign struct {
 	Message          string `gorm:"not null;"`
 	Signature        string `gorm:"size:255;default:''"`
 	Signer           string `gorm:"size:255;default:''"`
-	BtcAddress       string `gorm:"size:255;default:'';index:evm_chain_btc,unique"`
-	ChainId          uint   `gorm:"default:0;index:evm_chain_btc"`
-	BindedEvmAddress string `gorm:"size:255;default:'';index:evm_chain_btc"`
+	BtcAddress       string `gorm:"size:255;default:''"`
+	ChainId          uint   `gorm:"default:0"`
+	BindedEvmAddress string `gorm:"size:255;default:''"`
+	BtcTranHash      string `gorm:"size:255;default:'';index:hash,unique"`
 }
 
 const (

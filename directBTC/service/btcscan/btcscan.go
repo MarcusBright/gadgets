@@ -139,8 +139,7 @@ func (s *Scanner) filterAndMapTrans(trans []mempoolspace.AddressTransaction, tre
 			logx.Errorf("treasuryAddress amount is 0 or lower,address:%s, txid: %s", treasuryAddress, item.Txid)
 			return model.BtcTran{}, false
 		}
-		evmAddress, ChainId := s.getBindEvm(item.Vin[0].Prevout.ScriptpubkeyAddress)
-		tran := model.BtcTran{
+		return model.BtcTran{
 			TransactionHash: item.Txid,
 			TreasuryAddress: func() datatypes.JSON {
 				b, _ := json.Marshal(lo.Uniq(treasuryAddressIn))
@@ -155,32 +154,12 @@ func (s *Scanner) filterAndMapTrans(trans []mempoolspace.AddressTransaction, tre
 				b, _ := json.Marshal(utxoAddress)
 				return datatypes.JSON(b)
 			}(),
-			Status:            model.BtcTranStatusInit,
-			BlockNumber:       item.Status.BlockHeight,
-			BlockTime:         item.Status.BlockTime,
-			ConfirmNumber:     0,
-			ConfirmThreshold:  s.config.ConfirmThreshold,
-			BindedEvmAddress:  evmAddress,
-			ChainId:           ChainId,
-			RecievedEvmTxHash: "",
-			AcceptedEvmTxHash: "",
-			RejectedEvmTxHash: "",
-			ProcessIdx:        0,
-		}
-		if tran.BindedEvmAddress != "" && tran.ChainId != 0 {
-			tran.Status = model.BtcTranStatusBinded
-		}
-		return tran, true
+			Status:           model.BtcTranStatusInit,
+			BlockNumber:      item.Status.BlockHeight,
+			BlockTime:        item.Status.BlockTime,
+			ConfirmThreshold: s.config.ConfirmThreshold,
+		}, true
 	})
-}
-
-func (s *Scanner) getBindEvm(btcAddress string) (evmAddress string, chainId uint) {
-	var bindedData model.BindEvmSign
-	err := s.database.Model(&model.BindEvmSign{}).Where("btc_address = ?", btcAddress).First(&bindedData).Error
-	if err != nil {
-		return
-	}
-	return bindedData.BindedEvmAddress, bindedData.ChainId
 }
 
 func (s *Scanner) UpdateConfirmNumber() {
@@ -211,11 +190,12 @@ func (s *Scanner) UpdateConfirmNumber() {
 			continue
 		}
 		confirmedNumber := int64(latestHeight) - int64(tx.Status.BlockHeight)
-		if confirmedNumber <= 0 {
+		if confirmedNumber < 0 {
 			logx.Errorf("confrimedNumber[%d], latestHeight:%d, tx.BlockHeight:%d", confirmedNumber,
 				latestHeight, tx.Status.BlockHeight)
 			continue
 		}
+		confirmedNumber++
 		btcTran[k].ConfirmNumber = uint64(confirmedNumber)
 		btcTran[k].BlockNumber = tx.Status.BlockHeight
 	}
