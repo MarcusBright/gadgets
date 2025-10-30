@@ -35,7 +35,7 @@ type PageData struct {
 type Task struct {
 	ID                  uint64   `json:"id,example=1"`
 	Hash                string   `json:"hash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
-	TresuryAddress      []string `json:"tresuryAddress,example=["1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac","1MAvJ4pE1EkgN4CS7HFq7r65eoaTu8qxXM"]"`
+	TreasuryAddress     []string `json:"treasuryAddress,example=["1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac","1MAvJ4pE1EkgN4CS7HFq7r65eoaTu8qxXM"]"`
 	AmountSatoshi       string   `json:"amountSatoshi,example=111000000"`
 	FeeSatoshi          string   `json:"feeSatoshi,example=100"`
 	InputAddress        []string `json:"inputAddress,example=["1828upaDhq7PxgRLMGnvZDimzjfzxLpG9x","1PRhw1EnWJJ894qqSb8XrNKz1vtPw76kV5"]"`

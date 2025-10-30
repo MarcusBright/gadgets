@@ -70,7 +70,7 @@ func ItemsToTask(item []model.BtcTran) []types.Task {
 		return types.Task{
 			ID:   uint64(item.ID),
 			Hash: item.TransactionHash,
-			TresuryAddress: func() []string {
+			TreasuryAddress: func() []string {
 				var addrs []string
 				_ = json.Unmarshal(item.TreasuryAddress, &addrs)
 				return addrs
