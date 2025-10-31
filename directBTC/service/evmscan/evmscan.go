@@ -171,10 +171,11 @@ type MinterEvent struct {
 }
 
 func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.Client) ([]*MinterEvent, error) {
-	eventByBtcTransaction := make(map[string]*MinterEvent)
+	events := make([]*MinterEvent, 0)
 	for _, log := range logs {
 		if log.Removed {
 			logx.Errorf("log removed, hash:%v, blockNumber:%v, blockHash:%v", log.TxHash, log.BlockNumber, log.BlockHash)
+			return nil, fmt.Errorf("log removed")
 		}
 		transactionRecipient, err := client.TransactionReceipt(context.Background(), log.TxHash)
 		if err != nil {
@@ -197,21 +198,14 @@ func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.C
 				logx.Errorf("parse received event failed, err: %v", err)
 				return nil, err
 			}
-			if eventByBtcTransaction[common.BytesToHash(receivedEvent.TxHash[:]).Hex()] == nil {
-				eventByBtcTransaction[common.BytesToHash(receivedEvent.TxHash[:]).Hex()] = &MinterEvent{
-					BtcTransaction:    common.BytesToHash(receivedEvent.TxHash[:]).Hex(),
-					RecievedEvmTxHash: log.TxHash.Hex(),
-					ProcessIdx:        index,
-					Recipient:         receivedEvent.Recipient.Hex(),
-					Amount:            receivedEvent.Amount.String(),
-					EventHash:         log.TxHash.Hex(),
-				}
-			} else {
-				eventByBtcTransaction[common.BytesToHash(receivedEvent.TxHash[:]).Hex()].RecievedEvmTxHash = log.TxHash.Hex()
-				eventByBtcTransaction[common.BytesToHash(receivedEvent.TxHash[:]).Hex()].ProcessIdx = index
-				eventByBtcTransaction[common.BytesToHash(receivedEvent.TxHash[:]).Hex()].Recipient = receivedEvent.Recipient.Hex()
-				eventByBtcTransaction[common.BytesToHash(receivedEvent.TxHash[:]).Hex()].Amount = receivedEvent.Amount.String()
-			}
+			events = append(events, &MinterEvent{
+				BtcTransaction:    common.BytesToHash(receivedEvent.TxHash[:]).Hex(),
+				RecievedEvmTxHash: log.TxHash.Hex(),
+				ProcessIdx:        index,
+				Recipient:         receivedEvent.Recipient.Hex(),
+				Amount:            receivedEvent.Amount.String(),
+				EventHash:         log.TxHash.Hex(),
+			})
 			index++
 		case "Accepted":
 			acceptedEvent, err := s.directBTCMinter.ParseAccepted(log)
@@ -219,43 +213,29 @@ func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.C
 				logx.Errorf("parse accepted event failed, err: %v", err)
 				return nil, err
 			}
-			if eventByBtcTransaction[common.BytesToHash(acceptedEvent.TxHash[:]).Hex()] == nil {
-				eventByBtcTransaction[common.BytesToHash(acceptedEvent.TxHash[:]).Hex()] = &MinterEvent{
-					BtcTransaction:    common.BytesToHash(acceptedEvent.TxHash[:]).Hex(),
-					AcceptedEvmTxHash: log.TxHash.Hex(),
-					ProcessIdx:        -1,
-					Recipient:         acceptedEvent.Recipient.Hex(),
-					Amount:            acceptedEvent.Amount.String(),
-					EventHash:         log.TxHash.Hex(),
-				}
-			} else {
-				eventByBtcTransaction[common.BytesToHash(acceptedEvent.TxHash[:]).Hex()].AcceptedEvmTxHash = log.TxHash.Hex()
-				eventByBtcTransaction[common.BytesToHash(acceptedEvent.TxHash[:]).Hex()].Recipient = acceptedEvent.Recipient.Hex()
-				eventByBtcTransaction[common.BytesToHash(acceptedEvent.TxHash[:]).Hex()].Amount = acceptedEvent.Amount.String()
-			}
+			events = append(events, &MinterEvent{
+				BtcTransaction:    common.BytesToHash(acceptedEvent.TxHash[:]).Hex(),
+				AcceptedEvmTxHash: log.TxHash.Hex(),
+				ProcessIdx:        -1,
+				Recipient:         acceptedEvent.Recipient.Hex(),
+				Amount:            acceptedEvent.Amount.String(),
+				EventHash:         log.TxHash.Hex(),
+			})
 		case "Rejected":
 			rejectedEvent, err := s.directBTCMinter.ParseRejected(log)
 			if err != nil {
 				logx.Errorf("parse rejected event failed, err: %v", err)
 				return nil, err
 			}
-			if eventByBtcTransaction[common.BytesToHash(rejectedEvent.TxHash[:]).Hex()] == nil {
-				eventByBtcTransaction[common.BytesToHash(rejectedEvent.TxHash[:]).Hex()] = &MinterEvent{
-					BtcTransaction:    common.BytesToHash(rejectedEvent.TxHash[:]).Hex(),
-					RejectedEvmTxHash: log.TxHash.Hex(),
-					ProcessIdx:        -1,
-					Recipient:         rejectedEvent.Recipient.Hex(),
-					Amount:            rejectedEvent.Amount.String(),
-					EventHash:         log.TxHash.Hex(),
-				}
-			} else {
-				eventByBtcTransaction[common.BytesToHash(rejectedEvent.TxHash[:]).Hex()].RejectedEvmTxHash = log.TxHash.Hex()
-				eventByBtcTransaction[common.BytesToHash(rejectedEvent.TxHash[:]).Hex()].Recipient = rejectedEvent.Recipient.Hex()
-				eventByBtcTransaction[common.BytesToHash(rejectedEvent.TxHash[:]).Hex()].Amount = rejectedEvent.Amount.String()
-			}
+			events = append(events, &MinterEvent{
+				BtcTransaction:    common.BytesToHash(rejectedEvent.TxHash[:]).Hex(),
+				RejectedEvmTxHash: log.TxHash.Hex(),
+				ProcessIdx:        -1,
+				Recipient:         rejectedEvent.Recipient.Hex(),
+				Amount:            rejectedEvent.Amount.String(),
+				EventHash:         log.TxHash.Hex(),
+			})
 		}
 	}
-	return lo.MapToSlice(eventByBtcTransaction, func(key string, value *MinterEvent) *MinterEvent {
-		return value
-	}), nil
+	return events, nil
 }
