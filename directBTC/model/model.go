@@ -40,9 +40,9 @@ type BindEvmSign struct {
 	Message          string `gorm:"not null;"`
 	Signature        string `gorm:"size:255;default:''"`
 	Signer           string `gorm:"size:255;default:''"`
-	BtcAddress       string `gorm:"size:255;default:''"`
-	ChainId          uint   `gorm:"default:0"`
-	BindedEvmAddress string `gorm:"size:255;default:''"`
+	BtcAddress       string `gorm:"size:255;default:'';index:bind"`
+	ChainId          uint   `gorm:"default:0;index:bind"`
+	BindedEvmAddress string `gorm:"size:255;default:'';index:bind"`
 	BtcTranHash      string `gorm:"size:255;default:'';index:hash,unique"`
 }
 

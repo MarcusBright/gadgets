@@ -5,17 +5,29 @@ package svc
 
 import (
 	"directBTC/api/internal/config"
+	"directBTC/clientrpc/goeth"
 	"directBTC/pkg/gormz"
 
+	evmconfig "directBTC/service/evmscan/config"
+
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 type ServiceContext struct {
-	Config config.Config
-	DB     *gorm.DB
+	Config        config.Config
+	DB            *gorm.DB
+	EvmClientsMap map[uint]*ChainIdClient
 	// MemDB  *gorm.DB
+}
+
+type ChainIdClient struct {
+	ChainId  uint
+	Client   *ethclient.Client
+	Contract string
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -24,6 +36,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	})
 	logx.Must(err)
 
+	evmClients := lo.Map(c.EvmScan.ChainInfo, func(item evmconfig.ChainInfo, index int) *ChainIdClient {
+		return &ChainIdClient{item.Client.ChainId, goeth.NewClient(item.Client.Host, item.Client.Request, item.Client.PeriodSec), item.Miner}
+	})
+	evmClientsMap := lo.SliceToMap(evmClients, func(item *ChainIdClient) (uint, *ChainIdClient) {
+		return item.ChainId, item
+	})
 	// memoryDB, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
 	// 	Logger: gormz.NewGormLogger(),
 	// })
@@ -34,5 +52,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config: c,
 		DB:     db,
 		// MemDB:  memoryDB,
+		EvmClientsMap: evmClientsMap,
 	}
 }
