@@ -94,6 +94,9 @@ middlewares:
   gunzip: false
 traceignorepaths: []
 datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
+logslack: ""
+notifyslack: ""
+sysevmaddress: []
 btcscan:
   confirmthreshold: 4
   datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
@@ -109,3 +112,4 @@ evmscan:
   datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
   chaininfo: []
   logsscanspec: ""
+  notifyslack: ""
