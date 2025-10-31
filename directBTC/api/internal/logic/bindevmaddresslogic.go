@@ -65,15 +65,15 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 		if message.Amount > l.svcCtx.Config.TinyTry { //check latest ok
 			var signData model.BindEvmSign
 			if err := l.svcCtx.DB.Model(&model.BindEvmSign{}).Where("btc_address = ?", message.SignAddress).
-				Where("chain_id = ?", message.EvmChainId).Where("binded_evm_address = ?", message.EvmAddress).Last(&signData); err != nil {
+				Where("chain_id = ?", message.EvmChainId).Where("binded_evm_address = ?", message.EvmAddress).Last(&signData).Error; err != nil {
 				return nil, fmt.Errorf("no tiny try")
 			}
 			var tranData model.BtcTran
-			if err := l.svcCtx.DB.Model(&model.BtcTran{}).Where("transaction_hash = ?", signData.BtcTranHash).First(&tranData); err != nil {
-				return nil, fmt.Errorf("tiny try no complete")
+			if err := l.svcCtx.DB.Model(&model.BtcTran{}).Where("transaction_hash = ?", signData.BtcTranHash).First(&tranData).Error; err != nil {
+				return nil, fmt.Errorf("last mint not complete")
 			}
 			if tranData.Status != model.BtcTranStatusApprovedInEvm {
-				return nil, fmt.Errorf("tiny try no complete")
+				return nil, fmt.Errorf("last mint no complete")
 			}
 			//check evm whitelist in contract
 			if in := l.checkEvmInContract(message.EvmAddress, uint(message.EvmChainId)); !in {
@@ -175,6 +175,7 @@ func (l *BindEvmAddressLogic) btcSignVerify(message, signAddress, signature stri
 	}()
 
 	if inputAddress[0] != signAddress {
+		l.Errorf("signer address not equal input[0]")
 		return false, errors.New("signer address not equal input[0]")
 	}
 	net := func() *chaincfg.Params {
@@ -212,11 +213,12 @@ func (l *BindEvmAddressLogic) evmSignVerify(message, sig string) (string, error)
 	}
 	// 4. Derive the address and verify
 	recoveredAddress := crypto.PubkeyToAddress(*publicKey)
-	l.Info("recoverAddress:%v", recoveredAddress)
+	l.Infof("recoverAddress:%v", recoveredAddress)
 	// check if is system
 	if slices.Contains(l.svcCtx.Config.SysEvmAddress, recoveredAddress.String()) {
 		return recoveredAddress.String(), nil
 	}
+	l.Errorf("not in system signer:%v", l.svcCtx.Config.SysEvmAddress)
 	return "", fmt.Errorf("not system signer")
 }
 
