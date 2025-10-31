@@ -12,8 +12,10 @@ import (
 
 type Config struct {
 	rest.RestConf
-	DataSource string
-	LogSlack   string `json:",optional"`
-	BTCScan    btcscanconfig.Config
-	EvmScan    evmscanconfig.Config
+	DataSource    string
+	LogSlack      string   `json:",optional"`
+	NotifySlack   string   `json:",optional"`
+	SysEvmAddress []string `json:",optional"`
+	BTCScan       btcscanconfig.Config
+	EvmScan       evmscanconfig.Config
 }

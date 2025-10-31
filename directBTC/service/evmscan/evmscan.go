@@ -5,6 +5,7 @@ import (
 	"directBTC/clientrpc/goeth"
 	"directBTC/model"
 	"directBTC/pkg/gormz"
+	"directBTC/pkg/slack"
 	"directBTC/service/contract/directbtcminter"
 	"directBTC/service/evmscan/config"
 	"fmt"
@@ -97,7 +98,7 @@ func (s *Scanner) LogScan() {
 		//save events
 		if err := s.database.Transaction(func(tx *gorm.DB) error {
 			for _, event := range events {
-				columns := make(map[string]interface{})
+				columns := make(map[string]any)
 				//get compare data
 				var btcTran model.BtcTran
 				if err := tx.Model(&model.BtcTran{}).Where("transaction_hash = ?", strings.TrimPrefix(event.BtcTransaction, "0x")).
@@ -142,6 +143,7 @@ func (s *Scanner) LogScan() {
 					logx.Errorf("update btc tran failed, hash: %v, err: %v", event.BtcTransaction, err)
 					return err
 				}
+				slack.SendTo(s.config.NotifySlack, fmt.Sprintf("btcHash[%v] status to %v, evm hash[%v]", event.BtcTransaction, status, event.EventHash))
 			}
 			//save cursor
 			cursor.BlockNumber = uint64(end)
@@ -165,6 +167,7 @@ type MinterEvent struct {
 	BtcTransaction    string
 	Recipient         string
 	Amount            string
+	EventHash         string
 }
 
 func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.Client) ([]*MinterEvent, error) {
@@ -201,6 +204,7 @@ func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.C
 					ProcessIdx:        index,
 					Recipient:         receivedEvent.Recipient.Hex(),
 					Amount:            receivedEvent.Amount.String(),
+					EventHash:         log.TxHash.Hex(),
 				}
 			} else {
 				eventByBtcTransaction[common.BytesToHash(receivedEvent.TxHash[:]).Hex()].RecievedEvmTxHash = log.TxHash.Hex()
@@ -222,6 +226,7 @@ func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.C
 					ProcessIdx:        -1,
 					Recipient:         acceptedEvent.Recipient.Hex(),
 					Amount:            acceptedEvent.Amount.String(),
+					EventHash:         log.TxHash.Hex(),
 				}
 			} else {
 				eventByBtcTransaction[common.BytesToHash(acceptedEvent.TxHash[:]).Hex()].AcceptedEvmTxHash = log.TxHash.Hex()
@@ -241,6 +246,7 @@ func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.C
 					ProcessIdx:        -1,
 					Recipient:         rejectedEvent.Recipient.Hex(),
 					Amount:            rejectedEvent.Amount.String(),
+					EventHash:         log.TxHash.Hex(),
 				}
 			} else {
 				eventByBtcTransaction[common.BytesToHash(rejectedEvent.TxHash[:]).Hex()].RejectedEvmTxHash = log.TxHash.Hex()

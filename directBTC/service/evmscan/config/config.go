@@ -4,6 +4,7 @@ type Config struct {
 	DataSource   string
 	ChainInfo    []ChainInfo
 	LogsScanSpec string
+	NotifySlack  string `json:",optional"`
 }
 
 type EvmClient struct {

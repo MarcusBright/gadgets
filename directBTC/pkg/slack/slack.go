@@ -28,6 +28,9 @@ func NewSlackWriter(url string) *slackWriter {
 }
 
 func (s *slackWriter) Write(p []byte) (n int, err error) {
+	if s.url == "" {
+		return len(p), nil
+	}
 	pc := bytes.Clone(p)
 	s.queue <- pc
 	return len(p), nil
@@ -57,6 +60,9 @@ func (s *slackWriter) send() {
 }
 
 func SendTo(url, message string) {
+	if url == "" || message == "" {
+		return
+	}
 	m := slackMessage{
 		Text: message,
 	}

@@ -14,6 +14,7 @@ import (
 	"directBTC/api/internal/svc"
 	"directBTC/api/internal/types"
 	"directBTC/model"
+	"directBTC/pkg/slack"
 
 	"gorm.io/gorm"
 
@@ -127,7 +128,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 	resp = &types.BindEvmAddressResp{
 		Message: message,
 	}
-
+	slack.SendTo(l.svcCtx.Config.NotifySlack, "new bind, need check and recieve")
 	return resp, nil
 }
 
@@ -216,7 +217,10 @@ func (l *BindEvmAddressLogic) evmSignVerify(message, sig string) (string, error)
 	recoveredAddress := crypto.PubkeyToAddress(*publicKey)
 	l.Info("recoverAddress:%v", recoveredAddress)
 	// check if is system
-	return recoveredAddress.String(), nil
+	if slices.Contains(l.svcCtx.Config.SysEvmAddress, recoveredAddress.String()) {
+		return recoveredAddress.String(), nil
+	}
+	return "", fmt.Errorf("not system signer")
 }
 
 func (l *BindEvmAddressLogic) checkEvmInContract(address string, chainId uint) bool {
