@@ -16,6 +16,7 @@ type Config struct {
 	LogSlack      string   `json:",optional"`
 	NotifySlack   string   `json:",optional"`
 	SysEvmAddress []string `json:",optional"`
+	TinyTry       uint64   `json:",default=0"`
 	BTCScan       btcscanconfig.Config
 	EvmScan       evmscanconfig.Config
 }

@@ -30,9 +30,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-// 0.01 btc
-const TINY_TRY = uint64(1000000)
-
 type BindEvmAddressLogic struct {
 	logx.Logger
 	ctx    context.Context
@@ -65,7 +62,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 	}
 
 	if signer == message.SignAddress { //btc
-		if message.Amount > TINY_TRY { //check latest ok
+		if message.Amount > l.svcCtx.Config.TinyTry { //check latest ok
 			var signData model.BindEvmSign
 			if err := l.svcCtx.DB.Model(&model.BindEvmSign{}).Where("btc_address = ?", message.SignAddress).
 				Where("chain_id = ?", message.EvmChainId).Where("binded_evm_address = ?", message.EvmAddress).Last(&signData); err != nil {
