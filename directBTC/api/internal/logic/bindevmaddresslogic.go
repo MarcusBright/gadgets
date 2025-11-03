@@ -56,12 +56,12 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 		return nil, err
 	}
 
-	valid, signer, err := l.signVerify(req.Message, message.SignAddress, req.Signature, btcTran)
+	valid, signer, signType, err := l.signVerify(req.Message, message.SignAddress, req.Signature, btcTran)
 	if err != nil || !valid {
 		return nil, err
 	}
 
-	if signer == message.SignAddress { //btc
+	if signType == "btcSign" { //btc
 		if message.Amount > l.svcCtx.Config.TinyTry { //check latest ok
 			var signData model.BindEvmSign
 			if err := l.svcCtx.DB.Model(&model.BindEvmSign{}).Where("btc_address = ?", message.SignAddress).
@@ -155,16 +155,16 @@ func (l *BindEvmAddressLogic) canBind(req *types.Message) (*model.BtcTran, error
 	return &btcTran, nil
 }
 
-func (l *BindEvmAddressLogic) signVerify(message, signAddress, signature string, btcTran *model.BtcTran) (bool, string, error) {
+func (l *BindEvmAddressLogic) signVerify(message, signAddress, signature string, btcTran *model.BtcTran) (bool, string, string, error) {
 	btcValid, err := l.btcSignVerify(message, signAddress, signature, btcTran)
 	if err == nil && btcValid {
-		return true, signAddress, nil
+		return true, signAddress, "btcSign", nil
 	}
 	evmSiner, err := l.evmSignVerify(message, signature)
 	if err == nil && evmSiner != "" {
-		return true, evmSiner, nil
+		return true, evmSiner, "evmSign", nil
 	}
-	return false, "", fmt.Errorf("sign error")
+	return false, "", "", fmt.Errorf("sign error")
 }
 
 func (l *BindEvmAddressLogic) btcSignVerify(message, signAddress, signature string, btcTran *model.BtcTran) (bool, error) {
