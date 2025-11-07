@@ -8,6 +8,7 @@ logs/
 api/etc/directbtc-api.dev.yaml
 api/etc/directbtc-api.yaml
 api/etc/directbtc.yaml
+api/etc/directbtc-api.mainnet.yaml
 # Ignore IDE-specific files
 .idea/
 .vscode/
