@@ -3,6 +3,7 @@ syntax = "v1"
 info (
 	wrapCodeMsg: true
 	title:       "directBTC API"
+	schemes:     "https,http"
 )
 
 type (

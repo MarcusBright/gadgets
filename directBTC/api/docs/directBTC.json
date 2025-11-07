@@ -6,7 +6,8 @@
     "application/json"
   ],
   "schemes": [
-    "https"
+    "https",
+    "http"
   ],
   "swagger": "2.0",
   "info": {
@@ -310,7 +311,7 @@
       }
     }
   },
-  "x-date": "2025-10-30 17:52:48",
+  "x-date": "2025-11-07 14:46:08",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

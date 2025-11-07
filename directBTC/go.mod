@@ -10,6 +10,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/samber/lo v1.52.0
+	github.com/swaggest/swgui v1.8.5
 	github.com/zeromicro/go-zero v1.9.2
 	golang.org/x/time v0.10.0
 	gorm.io/datatypes v1.2.7
