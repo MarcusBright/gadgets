@@ -50,7 +50,7 @@ func (l *GetBtcAddressIsTrialLogic) GetBtcAddressIsTrial(req *types.GetBtcAddres
 		return nil, err
 	}
 	item := ItemsToTask(btcTasks, bindEvmSigns)
-	if len(item) > 0 && item[0].Status != model.BtcTranStatusApprovedInEvm {
+	if len(item) > 0 && item[0].Status == model.BtcTranStatusApprovedInEvm {
 		resp.IsTrial = true
 	}
 	if len(item) > 0 {
