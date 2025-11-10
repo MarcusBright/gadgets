@@ -108,6 +108,6 @@ type GetBtcAddressIsTrialResp {
 )
 service directBTC {
 	@handler GetBtcAddressIsTrial
-	post /btc/address/isTrial (GetBtcAddressIsTrialReq) returns (GetBtcAddressIsTrialResp)
+	post /btc/address/trialComplete (GetBtcAddressIsTrialReq) returns (GetBtcAddressIsTrialResp)
 }
 

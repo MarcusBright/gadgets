@@ -16,7 +16,7 @@
   },
   "basePath": "/",
   "paths": {
-    "/api/v1/btc/address/isTrial": {
+    "/api/v1/btc/address/trialComplete": {
       "post": {
         "consumes": [
           "application/json"
@@ -529,7 +529,7 @@
       }
     }
   },
-  "x-date": "2025-11-10 11:53:24",
+  "x-date": "2025-11-10 11:56:31",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",
