@@ -25,7 +25,7 @@ type GetBtcAddressIsTrialReq struct {
 type GetBtcAddressIsTrialResp struct {
 	Address       string `json:"address,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
 	TrialComplete bool   `json:"trialComplete,example=true"`
-	TrialInfo     Task   `json:"trialInfo"`
+	TrialInfo     *Task  `json:"trialInfo"`
 }
 
 type ListReq struct {

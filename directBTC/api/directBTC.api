@@ -99,7 +99,7 @@ type GetBtcAddressIsTrialReq {
 type GetBtcAddressIsTrialResp {
 	Address       string `json:"address,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
 	TrialComplete bool   `json:"trialComplete,example=true"`
-	TrialInfo     Task   `json:"trialInfo"`
+	TrialInfo     *Task  `json:"trialInfo"`
 }
 
 @server (

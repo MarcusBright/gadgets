@@ -54,7 +54,7 @@ func (l *GetBtcAddressIsTrialLogic) GetBtcAddressIsTrial(req *types.GetBtcAddres
 		resp.TrialComplete = true
 	}
 	if len(item) > 0 {
-		resp.TrialInfo = item[0]
+		resp.TrialInfo = &item[0]
 	}
 	return
 }
