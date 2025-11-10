@@ -54,7 +54,6 @@ func (s *Scanner) NewTrans() {
 	}
 	logx.Infof("GetAllBtcAddress: %v", len(btcAddress))
 
-	// var mempoolTrans []model.BtcTran
 	for _, addr := range btcAddress {
 		logx.Infof("GetAddressNewTransactions address: %s", addr.Address)
 		txs, err := s.client.GetAddressNewTransactions(addr.Address, addr.Txhash)
@@ -77,20 +76,23 @@ func (s *Scanner) NewTrans() {
 		}))
 		logx.Infof("GetAddressNewTransactions mempoolGroup: %d, minedGroup: %d, minedAddrTrans: %d, mempoolAddrTrans: %d",
 			len(mempoolGroup), len(minedGroup), len(minedAddrTrans), len(mempoolAddrTrans))
-		// mempoolTrans = append(mempoolTrans, mempoolAddrTrans...)
-		if len(minedGroup) == 0 {
+		newTrans := append(mempoolAddrTrans, minedAddrTrans...)
+		newTrans = lo.UniqBy(newTrans, func(item model.BtcTran) string {
+			return item.TransactionHash
+		})
+		if len(newTrans) == 0 {
 			continue
 		}
 		if err = s.database.Transaction(func(tx *gorm.DB) error {
-			if len(minedAddrTrans) != 0 {
-				if err := tx.Clauses(clause.OnConflict{DoNothing: true}).
-					CreateInBatches(&minedAddrTrans, 50).Error; err != nil {
+			if err := tx.Clauses(clause.OnConflict{DoNothing: true}).
+				CreateInBatches(&newTrans, 50).Error; err != nil {
+				return err
+			}
+			if len(minedGroup) != 0 {
+				if err := tx.Model(&model.Cursor{}).Where("address = ?", addr.Address).
+					Update("txhash", minedGroup[0].Txid).Error; err != nil {
 					return err
 				}
-			}
-			if err := tx.Model(&model.Cursor{}).Where("address = ?", addr.Address).
-				Update("txhash", minedGroup[0].Txid).Error; err != nil {
-				return err
 			}
 			return nil
 		}); err != nil {
