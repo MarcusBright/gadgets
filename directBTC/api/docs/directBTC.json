@@ -38,16 +38,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "required": [
-                "address"
-              ],
-              "properties": {
-                "address": {
-                  "type": "string",
-                  "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
-                }
-              }
+              "$ref": "#/definitions/GetBtcAddressIsTrialReq"
             }
           }
         ],
@@ -63,136 +54,7 @@
                   "example": 0
                 },
                 "data": {
-                  "type": "object",
-                  "properties": {
-                    "address": {
-                      "type": "string",
-                      "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
-                    },
-                    "trialComplete": {
-                      "type": "boolean",
-                      "example": true
-                    },
-                    "trialInfo": {
-                      "type": "object",
-                      "required": [
-                        "id",
-                        "hash",
-                        "amountSatoshi",
-                        "feeSatoshi",
-                        "status",
-                        "blockNumber",
-                        "blockTime",
-                        "confirmNumber",
-                        "confirmThreshold",
-                        "bindedEvmAddress",
-                        "chainId",
-                        "recievedEventTxHash",
-                        "acceptedEventTxHash",
-                        "rejectedEventTxHash",
-                        "bindSignInfo"
-                      ],
-                      "properties": {
-                        "InputAddress": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "TreasuryAddress": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "acceptedEventTxHash": {
-                          "type": "string",
-                          "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                        },
-                        "amountSatoshi": {
-                          "type": "string",
-                          "example": "111000000"
-                        },
-                        "bindSignInfo": {
-                          "type": "object",
-                          "required": [
-                            "message",
-                            "signature",
-                            "signer"
-                          ],
-                          "properties": {
-                            "message": {
-                              "type": "string",
-                              "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
-                            },
-                            "signature": {
-                              "type": "string",
-                              "example": "0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"
-                            },
-                            "signer": {
-                              "type": "string",
-                              "example": "tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"
-                            }
-                          }
-                        },
-                        "bindedEvmAddress": {
-                          "type": "string",
-                          "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
-                        },
-                        "blockNumber": {
-                          "type": "integer",
-                          "example": 919346
-                        },
-                        "blockTime": {
-                          "type": "integer",
-                          "example": 1760624353
-                        },
-                        "chainId": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "confirmNumber": {
-                          "type": "integer",
-                          "example": 2
-                        },
-                        "confirmThreshold": {
-                          "type": "integer",
-                          "example": 4
-                        },
-                        "feeSatoshi": {
-                          "type": "string",
-                          "example": "100"
-                        },
-                        "hash": {
-                          "type": "string",
-                          "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
-                        },
-                        "id": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "recievedEventTxHash": {
-                          "type": "string",
-                          "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                        },
-                        "rejectedEventTxHash": {
-                          "type": "string",
-                          "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                        },
-                        "status": {
-                          "type": "string",
-                          "enum": [
-                            "init",
-                            "binded",
-                            "receivedInEvm",
-                            "approvedInEvm",
-                            "rejectedInEvm"
-                          ],
-                          "example": "binded"
-                        }
-                      }
-                    }
-                  }
+                  "$ref": "#/definitions/GetBtcAddressIsTrialResp"
                 },
                 "msg": {
                   "description": "business message",
@@ -227,21 +89,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "required": [
-                "message",
-                "signature"
-              ],
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
-                },
-                "signature": {
-                  "type": "string",
-                  "example": "H3x5bM2MpXK9MyLLbIGWQjZQNTP6lfuIjmPqMrU7YZ5CCm5bS9L+zCtrfIOJaloDb0mf9QBSEDIs4UCd/jou1VI="
-                }
-              }
+              "$ref": "#/definitions/BindEvmAddressReq"
             }
           }
         ],
@@ -257,33 +105,7 @@
                   "example": 0
                 },
                 "data": {
-                  "type": "object",
-                  "properties": {
-                    "amount": {
-                      "type": "integer",
-                      "example": 1200300000
-                    },
-                    "evmAddress": {
-                      "type": "string",
-                      "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
-                    },
-                    "evmChainId": {
-                      "type": "integer",
-                      "example": 1
-                    },
-                    "signAddress": {
-                      "type": "string",
-                      "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
-                    },
-                    "transactionHash": {
-                      "type": "string",
-                      "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
-                    },
-                    "ts": {
-                      "type": "integer",
-                      "example": 12323323
-                    }
-                  }
+                  "$ref": "#/definitions/BindEvmAddressResp"
                 },
                 "msg": {
                   "description": "business message",
@@ -318,51 +140,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "object",
-              "required": [
-                "limit",
-                "offset",
-                "orderDir"
-              ],
-              "properties": {
-                "address": {
-                  "type": "string"
-                },
-                "limit": {
-                  "type": "integer",
-                  "default": 10,
-                  "maximum": 50,
-                  "minimum": 1,
-                  "example": 10
-                },
-                "offset": {
-                  "type": "integer",
-                  "default": 0,
-                  "example": 0
-                },
-                "orderDir": {
-                  "type": "string",
-                  "default": "desc",
-                  "enum": [
-                    "asc",
-                    "desc"
-                  ],
-                  "example": "desc"
-                },
-                "status": {
-                  "type": "array",
-                  "enum": [
-                    "init",
-                    "binded",
-                    "receivedInEvm",
-                    "approvedInEvm",
-                    "rejectedInEvm"
-                  ],
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
+              "$ref": "#/definitions/TaskListReq"
             }
           }
         ],
@@ -378,144 +156,7 @@
                   "example": 0
                 },
                 "data": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": [
-                          "id",
-                          "hash",
-                          "amountSatoshi",
-                          "feeSatoshi",
-                          "status",
-                          "blockNumber",
-                          "blockTime",
-                          "confirmNumber",
-                          "confirmThreshold",
-                          "bindedEvmAddress",
-                          "chainId",
-                          "recievedEventTxHash",
-                          "acceptedEventTxHash",
-                          "rejectedEventTxHash",
-                          "bindSignInfo"
-                        ],
-                        "properties": {
-                          "InputAddress": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          "TreasuryAddress": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          "acceptedEventTxHash": {
-                            "type": "string",
-                            "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                          },
-                          "amountSatoshi": {
-                            "type": "string",
-                            "example": "111000000"
-                          },
-                          "bindSignInfo": {
-                            "type": "object",
-                            "required": [
-                              "message",
-                              "signature",
-                              "signer"
-                            ],
-                            "properties": {
-                              "message": {
-                                "type": "string",
-                                "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
-                              },
-                              "signature": {
-                                "type": "string",
-                                "example": "0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"
-                              },
-                              "signer": {
-                                "type": "string",
-                                "example": "tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"
-                              }
-                            }
-                          },
-                          "bindedEvmAddress": {
-                            "type": "string",
-                            "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
-                          },
-                          "blockNumber": {
-                            "type": "integer",
-                            "example": 919346
-                          },
-                          "blockTime": {
-                            "type": "integer",
-                            "example": 1760624353
-                          },
-                          "chainId": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "confirmNumber": {
-                            "type": "integer",
-                            "example": 2
-                          },
-                          "confirmThreshold": {
-                            "type": "integer",
-                            "example": 4
-                          },
-                          "feeSatoshi": {
-                            "type": "string",
-                            "example": "100"
-                          },
-                          "hash": {
-                            "type": "string",
-                            "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
-                          },
-                          "id": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "recievedEventTxHash": {
-                            "type": "string",
-                            "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                          },
-                          "rejectedEventTxHash": {
-                            "type": "string",
-                            "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": [
-                              "init",
-                              "binded",
-                              "receivedInEvm",
-                              "approvedInEvm",
-                              "rejectedInEvm"
-                            ],
-                            "example": "binded"
-                          }
-                        }
-                      }
-                    },
-                    "limit": {
-                      "type": "integer",
-                      "example": 10
-                    },
-                    "offset": {
-                      "type": "integer",
-                      "default": 0,
-                      "example": 0
-                    },
-                    "total": {
-                      "type": "integer",
-                      "example": 1234
-                    }
-                  }
+                  "$ref": "#/definitions/TaskListResp"
                 },
                 "msg": {
                   "description": "business message",
@@ -529,7 +170,493 @@
       }
     }
   },
-  "x-date": "2025-11-10 12:12:19",
+  "definitions": {
+    "BindEvmAddressReq": {
+      "type": "object",
+      "required": [
+        "message",
+        "signature"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
+        },
+        "signature": {
+          "type": "string",
+          "example": "H3x5bM2MpXK9MyLLbIGWQjZQNTP6lfuIjmPqMrU7YZ5CCm5bS9L+zCtrfIOJaloDb0mf9QBSEDIs4UCd/jou1VI="
+        }
+      }
+    },
+    "BindEvmAddressResp": {
+      "type": "object",
+      "required": [
+        "evmAddress",
+        "evmChainId",
+        "amount",
+        "signAddress",
+        "transactionHash",
+        "ts"
+      ],
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "example": 1200300000
+        },
+        "evmAddress": {
+          "type": "string",
+          "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+        },
+        "evmChainId": {
+          "type": "integer",
+          "example": 1
+        },
+        "signAddress": {
+          "type": "string",
+          "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
+        },
+        "transactionHash": {
+          "type": "string",
+          "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+        },
+        "ts": {
+          "type": "integer",
+          "example": 12323323
+        }
+      }
+    },
+    "BindSignInfo": {
+      "type": "object",
+      "required": [
+        "message",
+        "signature",
+        "signer"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
+        },
+        "signature": {
+          "type": "string",
+          "example": "0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"
+        },
+        "signer": {
+          "type": "string",
+          "example": "tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"
+        }
+      }
+    },
+    "GetBtcAddressIsTrialReq": {
+      "type": "object",
+      "required": [
+        "address"
+      ],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
+        }
+      }
+    },
+    "GetBtcAddressIsTrialResp": {
+      "type": "object",
+      "required": [
+        "address",
+        "trialComplete",
+        "trialInfo"
+      ],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
+        },
+        "trialComplete": {
+          "type": "boolean",
+          "example": true
+        },
+        "trialInfo": {
+          "type": "object",
+          "required": [
+            "id",
+            "hash",
+            "amountSatoshi",
+            "feeSatoshi",
+            "status",
+            "blockNumber",
+            "blockTime",
+            "confirmNumber",
+            "confirmThreshold",
+            "bindedEvmAddress",
+            "chainId",
+            "recievedEventTxHash",
+            "acceptedEventTxHash",
+            "rejectedEventTxHash"
+          ],
+          "properties": {
+            "InputAddress": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "TreasuryAddress": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "acceptedEventTxHash": {
+              "type": "string",
+              "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+            },
+            "amountSatoshi": {
+              "type": "string",
+              "example": "111000000"
+            },
+            "bindSignInfo": {
+              "type": "object",
+              "$ref": "#/definitions/BindSignInfo"
+            },
+            "bindedEvmAddress": {
+              "type": "string",
+              "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+            },
+            "blockNumber": {
+              "type": "integer",
+              "example": 919346
+            },
+            "blockTime": {
+              "type": "integer",
+              "example": 1760624353
+            },
+            "chainId": {
+              "type": "integer",
+              "example": 1
+            },
+            "confirmNumber": {
+              "type": "integer",
+              "example": 2
+            },
+            "confirmThreshold": {
+              "type": "integer",
+              "example": 4
+            },
+            "feeSatoshi": {
+              "type": "string",
+              "example": "100"
+            },
+            "hash": {
+              "type": "string",
+              "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+            },
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "recievedEventTxHash": {
+              "type": "string",
+              "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+            },
+            "rejectedEventTxHash": {
+              "type": "string",
+              "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "init",
+                "binded",
+                "receivedInEvm",
+                "approvedInEvm",
+                "rejectedInEvm"
+              ],
+              "example": "binded"
+            }
+          },
+          "$ref": "#/definitions/Task"
+        }
+      }
+    },
+    "ListReq": {
+      "type": "object",
+      "required": [
+        "limit",
+        "offset"
+      ],
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "default": 10,
+          "maximum": 50,
+          "minimum": 1,
+          "example": 10
+        },
+        "offset": {
+          "type": "integer",
+          "default": 0,
+          "example": 0
+        }
+      }
+    },
+    "Message": {
+      "type": "object",
+      "required": [
+        "evmAddress",
+        "evmChainId",
+        "amount",
+        "signAddress",
+        "transactionHash",
+        "ts"
+      ],
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "example": 1200300000
+        },
+        "evmAddress": {
+          "type": "string",
+          "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+        },
+        "evmChainId": {
+          "type": "integer",
+          "example": 1
+        },
+        "signAddress": {
+          "type": "string",
+          "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
+        },
+        "transactionHash": {
+          "type": "string",
+          "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+        },
+        "ts": {
+          "type": "integer",
+          "example": 12323323
+        }
+      }
+    },
+    "PageData": {
+      "type": "object",
+      "required": [
+        "total",
+        "limit",
+        "offset"
+      ],
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "example": 10
+        },
+        "offset": {
+          "type": "integer",
+          "default": 0,
+          "example": 0
+        },
+        "total": {
+          "type": "integer",
+          "example": 1234
+        }
+      }
+    },
+    "Task": {
+      "type": "object",
+      "required": [
+        "id",
+        "hash",
+        "amountSatoshi",
+        "feeSatoshi",
+        "status",
+        "blockNumber",
+        "blockTime",
+        "confirmNumber",
+        "confirmThreshold",
+        "bindedEvmAddress",
+        "chainId",
+        "recievedEventTxHash",
+        "acceptedEventTxHash",
+        "rejectedEventTxHash"
+      ],
+      "properties": {
+        "InputAddress": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "TreasuryAddress": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "acceptedEventTxHash": {
+          "type": "string",
+          "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+        },
+        "amountSatoshi": {
+          "type": "string",
+          "example": "111000000"
+        },
+        "bindSignInfo": {
+          "type": "object",
+          "required": [
+            "message",
+            "signature",
+            "signer"
+          ],
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
+            },
+            "signature": {
+              "type": "string",
+              "example": "0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"
+            },
+            "signer": {
+              "type": "string",
+              "example": "tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"
+            }
+          },
+          "$ref": "#/definitions/BindSignInfo"
+        },
+        "bindedEvmAddress": {
+          "type": "string",
+          "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+        },
+        "blockNumber": {
+          "type": "integer",
+          "example": 919346
+        },
+        "blockTime": {
+          "type": "integer",
+          "example": 1760624353
+        },
+        "chainId": {
+          "type": "integer",
+          "example": 1
+        },
+        "confirmNumber": {
+          "type": "integer",
+          "example": 2
+        },
+        "confirmThreshold": {
+          "type": "integer",
+          "example": 4
+        },
+        "feeSatoshi": {
+          "type": "string",
+          "example": "100"
+        },
+        "hash": {
+          "type": "string",
+          "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "recievedEventTxHash": {
+          "type": "string",
+          "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+        },
+        "rejectedEventTxHash": {
+          "type": "string",
+          "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "init",
+            "binded",
+            "receivedInEvm",
+            "approvedInEvm",
+            "rejectedInEvm"
+          ],
+          "example": "binded"
+        }
+      }
+    },
+    "TaskListReq": {
+      "type": "object",
+      "required": [
+        "limit",
+        "offset",
+        "orderDir"
+      ],
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "default": 10,
+          "maximum": 50,
+          "minimum": 1,
+          "example": 10
+        },
+        "offset": {
+          "type": "integer",
+          "default": 0,
+          "example": 0
+        },
+        "orderDir": {
+          "type": "string",
+          "default": "desc",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "example": "desc"
+        },
+        "status": {
+          "type": "array",
+          "enum": [
+            "init",
+            "binded",
+            "receivedInEvm",
+            "approvedInEvm",
+            "rejectedInEvm"
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TaskListResp": {
+      "type": "object",
+      "required": [
+        "total",
+        "limit",
+        "offset",
+        "data"
+      ],
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Task"
+          }
+        },
+        "limit": {
+          "type": "integer",
+          "example": 10
+        },
+        "offset": {
+          "type": "integer",
+          "default": 0,
+          "example": 0
+        },
+        "total": {
+          "type": "integer",
+          "example": 1234
+        }
+      }
+    }
+  },
+  "x-date": "2025-11-12 09:55:09",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

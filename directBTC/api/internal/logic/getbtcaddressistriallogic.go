@@ -38,7 +38,9 @@ func (l *GetBtcAddressIsTrialLogic) GetBtcAddressIsTrial(req *types.GetBtcAddres
 
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
 	sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", req.Address)
-	if err := sql.Where("amount_satoshi <= ?", l.svcCtx.Config.TinyTry).Order("id desc").Limit(1).
+	if err := sql.Where("CAST(amount_satoshi AS UNSIGNED) + CAST(fee_satoshi AS UNSIGNED) = ?", l.svcCtx.Config.TinyTry).
+		Order("block_time desc").
+		Order("id desc").Limit(1).
 		Find(&btcTasks).Error; err != nil {
 		return nil, err
 	}

@@ -200,6 +200,7 @@ func (s *Scanner) UpdateConfirmNumber() {
 		confirmedNumber++
 		btcTran[k].ConfirmNumber = uint64(confirmedNumber)
 		btcTran[k].BlockNumber = tx.Status.BlockHeight
+		btcTran[k].BlockTime = tx.Status.BlockTime
 	}
 	if err := s.database.Save(&btcTran).Error; err != nil {
 		logx.Errorf("Save btcTran failed: %v", err)

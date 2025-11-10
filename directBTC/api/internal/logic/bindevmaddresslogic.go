@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 
 	"directBTC/api/internal/svc"
@@ -32,15 +33,17 @@ import (
 
 type BindEvmAddressLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx        context.Context
+	svcCtx     *svc.ServiceContext
+	trialLogic *GetBtcAddressIsTrialLogic
 }
 
 func NewBindEvmAddressLogic(ctx context.Context, svcCtx *svc.ServiceContext) *BindEvmAddressLogic {
 	return &BindEvmAddressLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:     logx.WithContext(ctx),
+		ctx:        ctx,
+		svcCtx:     svcCtx,
+		trialLogic: NewGetBtcAddressIsTrialLogic(ctx, svcCtx),
 	}
 }
 
@@ -62,18 +65,26 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 	}
 
 	if signType == "btcSign" { //btc
-		if message.Amount > l.svcCtx.Config.TinyTry { //check latest ok
-			var signData model.BindEvmSign
-			if err := l.svcCtx.DB.Model(&model.BindEvmSign{}).Where("btc_address = ?", message.SignAddress).
-				Where("chain_id = ?", message.EvmChainId).Where("binded_evm_address = ?", message.EvmAddress).Last(&signData).Error; err != nil {
-				return nil, fmt.Errorf("no tiny try")
+		amountSatoshi, err := strconv.ParseUint(btcTran.AmountSatoshi, 10, 64)
+		if err != nil {
+			return nil, fmt.Errorf("amountSatoshi parse uint:%v", err)
+		}
+		feeSatoshi, err := strconv.ParseUint(btcTran.FeeSatoshi, 10, 64)
+		if err != nil {
+			return nil, fmt.Errorf("feeSatoshi parse uint:%v", err)
+		}
+		if amountSatoshi+feeSatoshi > l.svcCtx.Config.TinyTry { //check latest ok
+			trialResp, err := l.trialLogic.GetBtcAddressIsTrial(&types.GetBtcAddressIsTrialReq{
+				Address: message.SignAddress,
+			})
+			if err != nil {
+				return nil, err
 			}
-			var tranData model.BtcTran
-			if err := l.svcCtx.DB.Model(&model.BtcTran{}).Where("transaction_hash = ?", signData.BtcTranHash).First(&tranData).Error; err != nil {
-				return nil, fmt.Errorf("last mint not complete")
+			if !trialResp.TrialComplete || trialResp.TrialInfo == nil {
+				return nil, fmt.Errorf("trial not complete")
 			}
-			if tranData.Status != model.BtcTranStatusApprovedInEvm {
-				return nil, fmt.Errorf("last mint no complete")
+			if trialResp.TrialInfo.BindedEvmAddress != message.EvmAddress {
+				return nil, fmt.Errorf("evmAddress not the trial address")
 			}
 			//check evm whitelist in contract
 			if in := l.checkEvmInContract(message.EvmAddress, uint(message.EvmChainId)); !in {

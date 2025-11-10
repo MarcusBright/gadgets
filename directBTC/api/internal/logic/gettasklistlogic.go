@@ -51,7 +51,7 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 			sql.Order("process_idx asc")
 		}
 	}
-	sql.Where("confirm_number >= confirm_threshold")
+	// sql.Where("confirm_number >= confirm_threshold")
 	if req.OrderDir == "desc" {
 		sql.Order("block_number desc")
 	} else {
@@ -102,15 +102,15 @@ func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign) []types.Task {
 			RecievedEventTxHash: item.RecievedEvmTxHash,
 			AcceptedEventTxHash: item.AcceptedEvmTxHash,
 			RejectedEventTxHash: item.RejectedEvmTxHash,
-			BindSignInfo: func() types.BindSignInfo {
+			BindSignInfo: func() *types.BindSignInfo {
 				if sign, ok := signMap[item.TransactionHash]; ok {
-					return types.BindSignInfo{
+					return &types.BindSignInfo{
 						Message:   sign.Message,
 						Signature: sign.Signature,
 						Signer:    sign.Signer,
 					}
 				}
-				return types.BindSignInfo{}
+				return nil
 			}(),
 		}
 	})
