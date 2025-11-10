@@ -69,7 +69,7 @@
                       "type": "string",
                       "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
                     },
-                    "isTrial": {
+                    "trialComplete": {
                       "type": "boolean",
                       "example": true
                     },
@@ -529,7 +529,7 @@
       }
     }
   },
-  "x-date": "2025-11-10 11:34:56",
+  "x-date": "2025-11-10 11:53:24",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",
