@@ -45,7 +45,8 @@
               ],
               "properties": {
                 "message": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
                 },
                 "signature": {
                   "type": "string",
@@ -202,12 +203,14 @@
                           "status",
                           "blockNumber",
                           "blockTime",
+                          "confirmNumber",
+                          "confirmThreshold",
                           "bindedEvmAddress",
                           "chainId",
                           "recievedEventTxHash",
                           "acceptedEventTxHash",
                           "rejectedEventTxHash",
-                          "signature"
+                          "bindSignInfo"
                         ],
                         "properties": {
                           "InputAddress": {
@@ -230,6 +233,28 @@
                             "type": "string",
                             "example": "111000000"
                           },
+                          "bindSignInfo": {
+                            "type": "object",
+                            "required": [
+                              "message",
+                              "signature",
+                              "signer"
+                            ],
+                            "properties": {
+                              "message": {
+                                "type": "string",
+                                "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
+                              },
+                              "signature": {
+                                "type": "string",
+                                "example": "0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"
+                              },
+                              "signer": {
+                                "type": "string",
+                                "example": "tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"
+                              }
+                            }
+                          },
                           "bindedEvmAddress": {
                             "type": "string",
                             "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
@@ -245,6 +270,14 @@
                           "chainId": {
                             "type": "integer",
                             "example": 1
+                          },
+                          "confirmNumber": {
+                            "type": "integer",
+                            "example": 2
+                          },
+                          "confirmThreshold": {
+                            "type": "integer",
+                            "example": 4
                           },
                           "feeSatoshi": {
                             "type": "string",
@@ -265,10 +298,6 @@
                           "rejectedEventTxHash": {
                             "type": "string",
                             "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-                          },
-                          "signature": {
-                            "type": "string",
-                            "example": "0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"
                           },
                           "status": {
                             "type": "string",
@@ -311,7 +340,7 @@
       }
     }
   },
-  "x-date": "2025-11-07 14:46:08",
+  "x-date": "2025-11-10 10:46:30",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

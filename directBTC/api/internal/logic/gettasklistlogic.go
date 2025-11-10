@@ -39,6 +39,7 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 	}
 	var /*memBtcTask,*/ btcTasks []model.BtcTran
 	// _ = l.svcCtx.MemDB.WithContext(l.ctx).Model(&model.BtcTran{}).Find(&memBtcTask).Error
+	var bindEvmSigns []model.BindEvmSign
 
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
 	if req.Address != "" {
@@ -59,13 +60,21 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 	if err := sql.Count(&resp.Total).Limit(req.Limit).Offset(req.Offset).Find(&btcTasks).Error; err != nil {
 		return nil, err
 	}
+	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BindEvmSign{}).Where("btc_tran_hash IN ?", lo.Map(btcTasks, func(item model.BtcTran, index int) string {
+		return item.TransactionHash
+	})).Find(&bindEvmSigns).Error; err != nil {
+		return nil, err
+	}
 
-	resp.Data = ItemsToTask(btcTasks)
+	resp.Data = ItemsToTask(btcTasks, bindEvmSigns)
 
 	return
 }
 
-func ItemsToTask(item []model.BtcTran) []types.Task {
+func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign) []types.Task {
+	signMap := lo.SliceToMap(sign, func(item model.BindEvmSign) (string, model.BindEvmSign) {
+		return item.BtcTranHash, item
+	})
 	return lo.Map(item, func(item model.BtcTran, index int) types.Task {
 		return types.Task{
 			ID:   uint64(item.ID),
@@ -82,17 +91,26 @@ func ItemsToTask(item []model.BtcTran) []types.Task {
 				_ = json.Unmarshal(item.InputUtxo, &addrs)
 				return addrs
 			}(),
-			Status:      item.Status,
-			BlockNumber: item.BlockNumber,
-			BlockTime:   item.BlockTime,
-			// ConfirmNumber:       item.ConfirmNumber,
-			// ConfirmThreshold:    item.ConfirmThreshold,
+			Status:              item.Status,
+			BlockNumber:         item.BlockNumber,
+			BlockTime:           item.BlockTime,
+			ConfirmNumber:       item.ConfirmNumber,
+			ConfirmThreshold:    item.ConfirmThreshold,
 			BindedEvmAddress:    item.BindedEvmAddress,
 			ChainId:             uint64(item.ChainId),
 			RecievedEventTxHash: item.RecievedEvmTxHash,
 			AcceptedEventTxHash: item.AcceptedEvmTxHash,
 			RejectedEventTxHash: item.RejectedEvmTxHash,
-			Signature:           item.Signature,
+			BindSignInfo: func() types.BindSignInfo {
+				if sign, ok := signMap[item.TransactionHash]; ok {
+					return types.BindSignInfo{
+						Message:   sign.Message,
+						Signature: sign.Signature,
+						Signer:    sign.Signer,
+					}
+				}
+				return types.BindSignInfo{}
+			}(),
 		}
 	})
 }
