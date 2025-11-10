@@ -60,9 +60,10 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 	if err := sql.Count(&resp.Total).Limit(req.Limit).Offset(req.Offset).Find(&btcTasks).Error; err != nil {
 		return nil, err
 	}
-	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BindEvmSign{}).Where("btc_tran_hash IN ?", lo.Map(btcTasks, func(item model.BtcTran, index int) string {
-		return item.TransactionHash
-	})).Find(&bindEvmSigns).Error; err != nil {
+	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BindEvmSign{}).
+		Where("btc_tran_hash IN ?", lo.Map(btcTasks, func(item model.BtcTran, index int) string {
+			return item.TransactionHash
+		})).Find(&bindEvmSigns).Error; err != nil {
 		return nil, err
 	}
 

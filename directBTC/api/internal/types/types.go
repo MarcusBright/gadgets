@@ -18,6 +18,16 @@ type BindSignInfo struct {
 	Signer    string `json:"signer,example=tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"`
 }
 
+type GetBtcAddressIsTrialReq struct {
+	Address string `json:"address,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
+}
+
+type GetBtcAddressIsTrialResp struct {
+	Address   string `json:"address,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
+	IsTrial   bool   `json:"isTrial,example=true"`
+	TrialInfo Task   `json:"trialInfo"`
+}
+
 type ListReq struct {
 	Limit  int `json:"limit,example=10,default=10,range=[1:50]"`
 	Offset int `json:"offset,example=0,default=0"`

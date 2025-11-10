@@ -27,4 +27,15 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithPrefix("/api/v1"),
 	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/btc/address/isTrial",
+				Handler: GetBtcAddressIsTrialHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1"),
+	)
 }
