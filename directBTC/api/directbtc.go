@@ -33,7 +33,6 @@ func main() {
 	server := rest.MustNewServer(c.RestConf,
 		rest.WithFileServer("/docs", http.Dir("./docs")),
 		rest.WithCors("*"))
-	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
@@ -70,4 +69,5 @@ func main() {
 	serverGroup.Add(crontab)
 
 	serverGroup.Start()
+	serverGroup.Stop()
 }

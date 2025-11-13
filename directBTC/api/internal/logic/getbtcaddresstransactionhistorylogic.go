@@ -31,6 +31,7 @@ func NewGetBtcAddressTransactionHistoryLogic(ctx context.Context, svcCtx *svc.Se
 
 func (l *GetBtcAddressTransactionHistoryLogic) GetBtcAddressTransactionHistory(req *types.GetBtcAddressTransactionHistoryReq) (resp *types.GetBtcAddressTransactionHistoryResp, err error) {
 	resp = &types.GetBtcAddressTransactionHistoryResp{
+		Address: req.Address,
 		PageData: types.PageData{
 			Limit:  req.Limit,
 			Offset: req.Offset,
