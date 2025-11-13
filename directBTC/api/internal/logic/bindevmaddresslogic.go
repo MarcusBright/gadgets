@@ -75,38 +75,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 		}
 	}
 
-	if err := l.svcCtx.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.WithContext(l.ctx).Model(&model.BtcTran{}).
-			//5.7+
-			Where("transaction_hash = ?", message.TransactionHash).
-			// Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", message.SignAddress).
-			Where("status = ?", model.BtcTranStatusInit).
-			Updates(map[string]any{
-				"binded_evm_address": message.EvmAddress,
-				"chain_id":           message.EvmChainId,
-				"status":             model.BtcTranStatusBinded,
-			}).Error; err != nil {
-			l.Errorf("message:%v, error: %v", message, err)
-			return err
-		} //only one evmChain, multi evm chain need bind
-		signData := model.BindEvmSign{
-			Message:          req.Message,
-			Signature:        req.Signature,
-			Signer:           signer,
-			BindedEvmAddress: message.EvmAddress,
-			ChainId:          uint(message.EvmChainId),
-			BtcAddress:       message.SignAddress,
-			BtcTranHash:      message.TransactionHash,
-		}
-		if err := tx.WithContext(l.ctx).Model(&model.BindEvmSign{}).Create(&signData).Error; err != nil {
-			l.Errorf("binded:%v", signData.BtcAddress)
-			return err
-		}
-		return nil
-	}); err != nil {
-		if strings.Contains(strings.ToLower(err.Error()), strings.ToLower("Duplicate entry")) {
-			return nil, errors.New("already binded")
-		}
+	if err := l.persistBindData(message, signer, req); err != nil {
 		return nil, err
 	}
 
@@ -208,6 +177,42 @@ func (l *BindEvmAddressLogic) evmSignVerify(message, sig string) (string, error)
 	}
 	l.Errorf("not in system signer:%v", l.svcCtx.Config.SysEvmAddress)
 	return "", fmt.Errorf("not system signer")
+}
+
+func (l *BindEvmAddressLogic) persistBindData(message types.Message, signer string, req *types.BindEvmAddressReq) error {
+	if err := l.svcCtx.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.WithContext(l.ctx).Model(&model.BtcTran{}).
+			Where("transaction_hash = ?", message.TransactionHash).
+			Where("status = ?", model.BtcTranStatusInit).
+			Updates(map[string]any{
+				"binded_evm_address": message.EvmAddress,
+				"chain_id":           message.EvmChainId,
+				"status":             model.BtcTranStatusBinded,
+			}).Error; err != nil {
+			l.Errorf("message:%v, error: %v", message, err)
+			return err
+		}
+		signData := model.BindEvmSign{
+			Message:          req.Message,
+			Signature:        req.Signature,
+			Signer:           signer,
+			BindedEvmAddress: message.EvmAddress,
+			ChainId:          uint(message.EvmChainId),
+			BtcAddress:       message.SignAddress,
+			BtcTranHash:      message.TransactionHash,
+		}
+		if err := tx.WithContext(l.ctx).Model(&model.BindEvmSign{}).Create(&signData).Error; err != nil {
+			l.Errorf("binded:%v", signData.BtcAddress)
+			return err
+		}
+		return nil
+	}); err != nil {
+		if strings.Contains(strings.ToLower(err.Error()), strings.ToLower("Duplicate entry")) {
+			return errors.New("already binded")
+		}
+		return err
+	}
+	return nil
 }
 
 func (l *BindEvmAddressLogic) validateBtcTrialAndWhitelist(message types.Message, btcTran *model.BtcTran) error {
