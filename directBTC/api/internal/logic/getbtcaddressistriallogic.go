@@ -5,6 +5,8 @@ package logic
 
 import (
 	"context"
+	"slices"
+	"time"
 
 	"directBTC/api/internal/svc"
 	"directBTC/api/internal/types"
@@ -29,6 +31,64 @@ func NewGetBtcAddressIsTrialLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *GetBtcAddressIsTrialLogic) GetBtcAddressIsTrial(req *types.GetBtcAddressIsTrialReq) (resp *types.GetBtcAddressIsTrialResp, err error) {
+	resp = &types.GetBtcAddressIsTrialResp{
+		Address: req.Address,
+	}
+	item, err := l.collectTrialItems(req.Address)
+	if err != nil {
+		return nil, err
+	}
+	groupedItem := lo.GroupBy(item, func(btcTran types.Task) string {
+		return btcTran.Status
+	})
+	// slices.SortFunc(groupedItem[model.BtcTranStatusApprovedInEvm], func(a, b types.Task) int {
+	// 	return int(a.BlockTime - b.BlockTime)
+	// })
+	// slices.SortFunc(groupedItem[model.BtcTranStatusBinded], func(a, b types.Task) int {
+	// 	return int(a.BlockTime - b.BlockTime)
+	// })
+	if len(groupedItem[model.BtcTranStatusApprovedInEvm]) > 0 {
+		resp.TrialComplete = true
+		resp.TrialInfo = &groupedItem[model.BtcTranStatusApprovedInEvm][0]
+		return
+	}
+	if len(groupedItem[model.BtcTranStatusBinded]) > 0 {
+		resp.TrialInfo = &groupedItem[model.BtcTranStatusBinded][0]
+		return
+	}
+	slices.SortFunc(groupedItem[model.BtcTranStatusInit], func(a, b types.Task) int {
+		return int(b.BlockTime - a.BlockTime)
+	})
+	latestInit := lo.Filter(groupedItem[model.BtcTranStatusInit], func(item types.Task, index int) bool {
+		// latest 3 day
+		return time.Now().AddDate(0, 0, -3).Unix() <= int64(item.BlockTime)
+	})
+	if len(latestInit) > 0 {
+		resp.TrialInfo = &latestInit[0]
+	}
+	return
+}
+
+func (l *GetBtcAddressIsTrialLogic) collectTrialItems(address string) ([]types.Task, error) {
+	var btcTasks []model.BtcTran
+	var bindEvmSigns []model.BindEvmSign
+	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
+	sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", address)
+	if err := sql.Where("CAST(amount_satoshi AS UNSIGNED) + CAST(fee_satoshi AS UNSIGNED) = ?", l.svcCtx.Config.TinyTry).
+		Order("block_time").Order("id desc").Find(&btcTasks).Error; err != nil {
+		return nil, err
+	}
+
+	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BindEvmSign{}).
+		Where("btc_tran_hash IN ?", lo.Map(btcTasks, func(item model.BtcTran, index int) string {
+			return item.TransactionHash
+		})).Find(&bindEvmSigns).Error; err != nil {
+		return nil, err
+	}
+	return ItemsToTask(btcTasks, bindEvmSigns), nil
+}
+
+func (l *GetBtcAddressIsTrialLogic) v1GetBtcAddressIsTrial(req *types.GetBtcAddressIsTrialReq) (resp *types.GetBtcAddressIsTrialResp, err error) {
 	var /*memBtcTask,*/ btcTasks []model.BtcTran
 	// _ = l.svcCtx.MemDB.WithContext(l.ctx).Model(&model.BtcTran{}).Find(&memBtcTask).Error
 	var bindEvmSigns []model.BindEvmSign
