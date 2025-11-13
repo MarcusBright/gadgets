@@ -16,6 +16,57 @@
   },
   "basePath": "/",
   "paths": {
+    "/api/v1/btc/address/transactionHistory": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "btcAddressInfo"
+        ],
+        "summary": "GetBtcAddressTransactionHistory",
+        "operationId": "getBtcAddressTransactionHistory",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetBtcAddressTransactionHistoryReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "description": "business code",
+                  "type": "integer",
+                  "example": 0
+                },
+                "data": {
+                  "$ref": "#/definitions/GetBtcAddressTransactionHistoryResp"
+                },
+                "msg": {
+                  "description": "business message",
+                  "type": "string",
+                  "example": "ok"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/btc/address/trialComplete": {
       "post": {
         "consumes": [
@@ -378,6 +429,66 @@
         }
       }
     },
+    "GetBtcAddressTransactionHistoryReq": {
+      "type": "object",
+      "required": [
+        "limit",
+        "offset",
+        "address"
+      ],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
+        },
+        "limit": {
+          "type": "integer",
+          "default": 10,
+          "maximum": 50,
+          "minimum": 1,
+          "example": 10
+        },
+        "offset": {
+          "type": "integer",
+          "default": 0,
+          "example": 0
+        }
+      }
+    },
+    "GetBtcAddressTransactionHistoryResp": {
+      "type": "object",
+      "required": [
+        "total",
+        "limit",
+        "offset",
+        "address"
+      ],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Transaction"
+          }
+        },
+        "limit": {
+          "type": "integer",
+          "example": 10
+        },
+        "offset": {
+          "type": "integer",
+          "default": 0,
+          "example": 0
+        },
+        "total": {
+          "type": "integer",
+          "example": 1234
+        }
+      }
+    },
     "ListReq": {
       "type": "object",
       "required": [
@@ -654,9 +765,68 @@
           "example": 1234
         }
       }
+    },
+    "Transaction": {
+      "type": "object",
+      "required": [
+        "id",
+        "hash",
+        "amountSatoshi",
+        "feeSatoshi",
+        "blockNumber",
+        "blockTime",
+        "confirmNumber",
+        "confirmThreshold"
+      ],
+      "properties": {
+        "InputAddress": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "TreasuryAddress": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "amountSatoshi": {
+          "type": "string",
+          "example": "111000000"
+        },
+        "blockNumber": {
+          "type": "integer",
+          "example": 919346
+        },
+        "blockTime": {
+          "type": "integer",
+          "example": 1760624353
+        },
+        "confirmNumber": {
+          "type": "integer",
+          "example": 2
+        },
+        "confirmThreshold": {
+          "type": "integer",
+          "example": 4
+        },
+        "feeSatoshi": {
+          "type": "string",
+          "example": "100"
+        },
+        "hash": {
+          "type": "string",
+          "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        }
+      }
     }
   },
-  "x-date": "2025-11-12 09:55:09",
+  "x-date": "2025-11-13 10:31:51",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

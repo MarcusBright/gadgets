@@ -32,6 +32,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/btc/address/transactionHistory",
+				Handler: GetBtcAddressTransactionHistoryHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/btc/address/trialComplete",
 				Handler: GetBtcAddressIsTrialHandler(serverCtx),
 			},

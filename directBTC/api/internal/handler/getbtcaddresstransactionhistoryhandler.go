@@ -10,16 +10,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func GetBtcAddressIsTrialHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetBtcAddressTransactionHistoryHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetBtcAddressIsTrialReq
+		var req types.GetBtcAddressTransactionHistoryReq
 		if err := httpx.Parse(r, &req); err != nil {
 			response.Response(w, nil, response.ParamError(err.Error()))
 			return
 		}
 
-		l := logic.NewGetBtcAddressIsTrialLogic(r.Context(), svcCtx)
-		resp, err := l.GetBtcAddressIsTrial(&req)
+		l := logic.NewGetBtcAddressTransactionHistoryLogic(r.Context(), svcCtx)
+		resp, err := l.GetBtcAddressTransactionHistory(&req)
 		response.Response(w, resp, err)
 	}
 }
