@@ -65,31 +65,8 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 	}
 
 	if signType == "btcSign" { //btc
-		amountSatoshi, err := strconv.ParseUint(btcTran.AmountSatoshi, 10, 64)
-		if err != nil {
-			return nil, fmt.Errorf("amountSatoshi parse uint:%v", err)
-		}
-		feeSatoshi, err := strconv.ParseUint(btcTran.FeeSatoshi, 10, 64)
-		if err != nil {
-			return nil, fmt.Errorf("feeSatoshi parse uint:%v", err)
-		}
-		if amountSatoshi+feeSatoshi > l.svcCtx.Config.TinyTry { //check latest ok
-			trialResp, err := l.trialLogic.GetBtcAddressIsTrial(&types.GetBtcAddressIsTrialReq{
-				Address: message.SignAddress,
-			})
-			if err != nil {
-				return nil, err
-			}
-			if !trialResp.TrialComplete || trialResp.TrialInfo == nil {
-				return nil, fmt.Errorf("trial not complete")
-			}
-			if trialResp.TrialInfo.BindedEvmAddress != message.EvmAddress {
-				return nil, fmt.Errorf("evmAddress not the trial address")
-			}
-			//check evm whitelist in contract
-			if in := l.checkEvmInContract(message.EvmAddress, uint(message.EvmChainId)); !in {
-				return nil, fmt.Errorf("not in whitelist")
-			}
+		if err := l.validateBtcTrialAndWhitelist(message, btcTran); err != nil {
+			return nil, err
 		}
 	} else { //evm sys
 		//check evm whitelist in contract
@@ -231,6 +208,52 @@ func (l *BindEvmAddressLogic) evmSignVerify(message, sig string) (string, error)
 	}
 	l.Errorf("not in system signer:%v", l.svcCtx.Config.SysEvmAddress)
 	return "", fmt.Errorf("not system signer")
+}
+
+func (l *BindEvmAddressLogic) validateBtcTrialAndWhitelist(message types.Message, btcTran *model.BtcTran) error {
+	amountSatoshi, err := strconv.ParseUint(btcTran.AmountSatoshi, 10, 64)
+	if err != nil {
+		return fmt.Errorf("amountSatoshi parse uint:%v", err)
+	}
+	feeSatoshi, err := strconv.ParseUint(btcTran.FeeSatoshi, 10, 64)
+	if err != nil {
+		return fmt.Errorf("feeSatoshi parse uint:%v", err)
+	}
+
+	trialResp, err := l.trialLogic.GetBtcAddressIsTrial(&types.GetBtcAddressIsTrialReq{
+		Address: message.SignAddress,
+	})
+	if err != nil {
+		return err
+	}
+
+	if amountSatoshi+feeSatoshi != l.svcCtx.Config.TinyTry {
+		if !trialResp.TrialComplete || trialResp.TrialInfo == nil {
+			return fmt.Errorf("trial not complete")
+		}
+		if trialResp.TrialInfo.BindedEvmAddress != message.EvmAddress {
+			return fmt.Errorf("evmAddress not the trial address")
+		}
+		if in := l.checkEvmInContract(message.EvmAddress, uint(message.EvmChainId)); !in {
+			return fmt.Errorf("not in whitelist")
+		}
+	} else {
+		if trialResp.TrialInfo == nil {
+			return fmt.Errorf("sys wrong")
+		}
+		if trialResp.TrialInfo.Hash != message.TransactionHash {
+			if !trialResp.TrialComplete {
+				return fmt.Errorf("trial not complete")
+			}
+			if trialResp.TrialInfo.BindedEvmAddress != message.EvmAddress {
+				return fmt.Errorf("evmAddress not the trial address")
+			}
+			if in := l.checkEvmInContract(message.EvmAddress, uint(message.EvmChainId)); !in {
+				return fmt.Errorf("not in whitelist")
+			}
+		}
+	}
+	return nil
 }
 
 func (l *BindEvmAddressLogic) checkEvmInContract(address string, chainId uint) bool {
