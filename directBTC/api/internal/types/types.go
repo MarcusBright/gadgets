@@ -40,23 +40,22 @@ type GetBtcAddressTransactionHistoryResp struct {
 }
 
 type ListReq struct {
-	Limit  int `json:"limit,example=10,default=10,range=[1:50]"`
-	Offset int `json:"offset,example=0,default=0"`
+	Limit  int `json:"limit,example=10,default=10,range=[1:50]"` //Number of items per page
+	Offset int `json:"offset,example=0,default=0"`               //Data offset
 }
 
 type Message struct {
 	EvmAddress      string `json:"evmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
 	EvmChainId      uint64 `json:"evmChainId,example=1"`
-	Amount          uint64 `json:"amount,example=1200300000"`
 	SignAddress     string `json:"signAddress,example=1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"`
 	TransactionHash string `json:"transactionHash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
 	Ts              uint64 `json:"ts,example=12323323"`
 }
 
 type PageData struct {
-	Total  int64 `json:"total,example=1234"`
-	Limit  int   `json:"limit,example=10"`
-	Offset int   `json:"offset,example=0,default=0"`
+	Total  int64 `json:"total,example=1234"`         //Total data count
+	Limit  int   `json:"limit,example=10"`           //Number of items per page, consistent with the request
+	Offset int   `json:"offset,example=0,default=0"` //Data offset, consistent with the request
 }
 
 type Task struct {

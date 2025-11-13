@@ -244,16 +244,11 @@
       "required": [
         "evmAddress",
         "evmChainId",
-        "amount",
         "signAddress",
         "transactionHash",
         "ts"
       ],
       "properties": {
-        "amount": {
-          "type": "integer",
-          "example": 1200300000
-        },
         "evmAddress": {
           "type": "string",
           "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
@@ -442,6 +437,7 @@
           "example": "1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac"
         },
         "limit": {
+          "description": "Number of items per page",
           "type": "integer",
           "default": 10,
           "maximum": 50,
@@ -449,6 +445,7 @@
           "example": 10
         },
         "offset": {
+          "description": "Data offset",
           "type": "integer",
           "default": 0,
           "example": 0
@@ -475,15 +472,18 @@
           }
         },
         "limit": {
+          "description": "Number of items per page, consistent with the request",
           "type": "integer",
           "example": 10
         },
         "offset": {
+          "description": "Data offset, consistent with the request",
           "type": "integer",
           "default": 0,
           "example": 0
         },
         "total": {
+          "description": "Total data count",
           "type": "integer",
           "example": 1234
         }
@@ -497,6 +497,7 @@
       ],
       "properties": {
         "limit": {
+          "description": "Number of items per page",
           "type": "integer",
           "default": 10,
           "maximum": 50,
@@ -504,6 +505,7 @@
           "example": 10
         },
         "offset": {
+          "description": "Data offset",
           "type": "integer",
           "default": 0,
           "example": 0
@@ -515,16 +517,11 @@
       "required": [
         "evmAddress",
         "evmChainId",
-        "amount",
         "signAddress",
         "transactionHash",
         "ts"
       ],
       "properties": {
-        "amount": {
-          "type": "integer",
-          "example": 1200300000
-        },
         "evmAddress": {
           "type": "string",
           "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
@@ -556,15 +553,18 @@
       ],
       "properties": {
         "limit": {
+          "description": "Number of items per page, consistent with the request",
           "type": "integer",
           "example": 10
         },
         "offset": {
+          "description": "Data offset, consistent with the request",
           "type": "integer",
           "default": 0,
           "example": 0
         },
         "total": {
+          "description": "Total data count",
           "type": "integer",
           "example": 1234
         }
@@ -701,6 +701,7 @@
           "type": "string"
         },
         "limit": {
+          "description": "Number of items per page",
           "type": "integer",
           "default": 10,
           "maximum": 50,
@@ -708,6 +709,7 @@
           "example": 10
         },
         "offset": {
+          "description": "Data offset",
           "type": "integer",
           "default": 0,
           "example": 0
@@ -752,15 +754,18 @@
           }
         },
         "limit": {
+          "description": "Number of items per page, consistent with the request",
           "type": "integer",
           "example": 10
         },
         "offset": {
+          "description": "Data offset, consistent with the request",
           "type": "integer",
           "default": 0,
           "example": 0
         },
         "total": {
+          "description": "Total data count",
           "type": "integer",
           "example": 1234
         }
@@ -826,7 +831,7 @@
       }
     }
   },
-  "x-date": "2025-11-13 10:31:51",
+  "x-date": "2025-11-13 15:28:27",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

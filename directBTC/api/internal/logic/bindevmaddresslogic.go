@@ -88,7 +88,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 
 func (l *BindEvmAddressLogic) canBind(req *types.Message) (*model.BtcTran, error) {
 	//check param
-	if req.EvmAddress == "" || req.EvmChainId == 0 || req.SignAddress == "" || req.TransactionHash == "" || req.Amount == 0 {
+	if req.EvmAddress == "" || req.EvmChainId == 0 || req.SignAddress == "" || req.TransactionHash == "" {
 		return nil, fmt.Errorf("message param error")
 	}
 	if !slices.ContainsFunc(l.svcCtx.Config.EvmScan.ChainInfo, func(c evmscanconfig.ChainInfo) bool {
@@ -105,9 +105,6 @@ func (l *BindEvmAddressLogic) canBind(req *types.Message) (*model.BtcTran, error
 	}
 	if btcTran.Status != model.BtcTranStatusInit || btcTran.BindedEvmAddress != "" || btcTran.ChainId != 0 {
 		return nil, fmt.Errorf("hash has binded:%v", btcTran.Status)
-	}
-	if btcTran.AmountSatoshi != fmt.Sprintf("%d", req.Amount) {
-		return nil, fmt.Errorf("amount not match, tran:%v, req:%v", btcTran.AmountSatoshi, req.Amount)
 	}
 	return &btcTran, nil
 }

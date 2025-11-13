@@ -1,7 +1,7 @@
 package config
 
 type Config struct {
-	DataSource   string
+	DataSource   string `json:",inherit"`
 	ChainInfo    []ChainInfo
 	LogsScanSpec string
 	NotifySlack  string `json:",optional"`
