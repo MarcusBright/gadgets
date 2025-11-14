@@ -17,6 +17,7 @@ type BindInfo struct {
 	Signature        string `json:"signature,example=0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"`
 	Signer           string `json:"signer,example=tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"`
 	BindedEvmAddress string `json:"bindedEvmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
+	ChainId          uint64 `json:"chainId,example=1"`
 	Timestamp        int64  `json:"timestamp,example=1111111111"`
 }
 
@@ -77,7 +78,6 @@ type Task struct {
 	BlockTime        uint64       `json:"blockTime,example=1760624353"`
 	ConfirmNumber    uint64       `json:"confirmNumber,example=2"`
 	ConfirmThreshold uint64       `json:"confirmThreshold,example=4"`
-	ChainId          uint64       `json:"chainId,example=1"`
 	ReceiveInfo      *EvmHashInfo `json:"receiveInfo,optional"`
 	ApproveInfo      *EvmHashInfo `json:"approveInfo,optional"`
 	RejectInfo       *EvmHashInfo `json:"rejectInfo,optional"`
@@ -88,7 +88,8 @@ type TaskListReq struct {
 	ListReq
 	Status   []string `json:"status,optional,options=init|binded|receivedInEvm|approvedInEvm|rejectedInEvm"`
 	OrderDir string   `json:"orderDir,options=asc|desc,default=desc"`
-	Address  string   `json:"address,optional"`
+	Address  string   `json:"address,optional,example=1828upaDhq7PxgRLMGnvZDimzjfzxLpG9x"`
+	Hash     string   `json:"hash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
 }
 
 type TaskListResp struct {

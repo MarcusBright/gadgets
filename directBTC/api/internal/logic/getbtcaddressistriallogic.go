@@ -5,7 +5,6 @@ package logic
 
 import (
 	"context"
-	"slices"
 	"time"
 
 	"directBTC/api/internal/svc"
@@ -41,12 +40,6 @@ func (l *GetBtcAddressIsTrialLogic) GetBtcAddressIsTrial(req *types.GetBtcAddres
 	groupedItem := lo.GroupBy(item, func(btcTran types.Task) string {
 		return btcTran.Status
 	})
-	// slices.SortFunc(groupedItem[model.BtcTranStatusApprovedInEvm], func(a, b types.Task) int {
-	// 	return int(a.BlockTime - b.BlockTime)
-	// })
-	// slices.SortFunc(groupedItem[model.BtcTranStatusBinded], func(a, b types.Task) int {
-	// 	return int(a.BlockTime - b.BlockTime)
-	// })
 	if len(groupedItem[model.BtcTranStatusApprovedInEvm]) > 0 {
 		resp.TrialComplete = true
 		resp.TrialInfo = &groupedItem[model.BtcTranStatusApprovedInEvm][0]
@@ -56,15 +49,12 @@ func (l *GetBtcAddressIsTrialLogic) GetBtcAddressIsTrial(req *types.GetBtcAddres
 		resp.TrialInfo = &groupedItem[model.BtcTranStatusBinded][0]
 		return
 	}
-	slices.SortFunc(groupedItem[model.BtcTranStatusInit], func(a, b types.Task) int {
-		return int(b.BlockTime - a.BlockTime)
-	})
-	latestInit := lo.Filter(groupedItem[model.BtcTranStatusInit], func(item types.Task, index int) bool {
-		// latest 3 day
-		return time.Now().AddDate(0, 0, -3).Unix() <= int64(item.BlockTime)
-	})
-	if len(latestInit) > 0 {
-		resp.TrialInfo = &latestInit[0]
+	if len(groupedItem[model.BtcTranStatusInit]) > 0 {
+		latest := groupedItem[model.BtcTranStatusInit][len(groupedItem[model.BtcTranStatusInit])-1]
+		if time.Now().AddDate(0, 0, -3).Unix() <= int64(latest.BlockTime) {
+			resp.TrialInfo = &latest
+			return
+		}
 	}
 	return
 }
@@ -92,7 +82,17 @@ func (l *GetBtcAddressIsTrialLogic) collectTrialItems(address string) ([]types.T
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
 		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
-			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+			hashes := []string{}
+			if item.RecievedEvmTxHash != "" {
+				hashes = append(hashes, item.RecievedEvmTxHash)
+			}
+			if item.AcceptedEvmTxHash != "" {
+				hashes = append(hashes, item.AcceptedEvmTxHash)
+			}
+			if item.RejectedEvmTxHash != "" {
+				hashes = append(hashes, item.RejectedEvmTxHash)
+			}
+			return hashes
 		})).Find(&evmHashInfos).Error; err != nil {
 		return nil, err
 	}
@@ -127,7 +127,17 @@ func (l *GetBtcAddressIsTrialLogic) v1GetBtcAddressIsTrial(req *types.GetBtcAddr
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
 		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
-			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+			hashes := []string{}
+			if item.RecievedEvmTxHash != "" {
+				hashes = append(hashes, item.RecievedEvmTxHash)
+			}
+			if item.AcceptedEvmTxHash != "" {
+				hashes = append(hashes, item.AcceptedEvmTxHash)
+			}
+			if item.RejectedEvmTxHash != "" {
+				hashes = append(hashes, item.RejectedEvmTxHash)
+			}
+			return hashes
 		})).Find(&evmHashInfos).Error; err != nil {
 		return nil, err
 	}

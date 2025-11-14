@@ -278,12 +278,17 @@
         "signature",
         "signer",
         "bindedEvmAddress",
+        "chainId",
         "timestamp"
       ],
       "properties": {
         "bindedEvmAddress": {
           "type": "string",
           "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+        },
+        "chainId": {
+          "type": "integer",
+          "example": 1
         },
         "message": {
           "type": "string",
@@ -359,8 +364,7 @@
             "blockNumber",
             "blockTime",
             "confirmNumber",
-            "confirmThreshold",
-            "chainId"
+            "confirmThreshold"
           ],
           "properties": {
             "InputAddress": {
@@ -394,10 +398,6 @@
             "blockTime": {
               "type": "integer",
               "example": 1760624353
-            },
-            "chainId": {
-              "type": "integer",
-              "example": 1
             },
             "confirmNumber": {
               "type": "integer",
@@ -600,8 +600,7 @@
         "blockNumber",
         "blockTime",
         "confirmNumber",
-        "confirmThreshold",
-        "chainId"
+        "confirmThreshold"
       ],
       "properties": {
         "InputAddress": {
@@ -645,12 +644,17 @@
             "signature",
             "signer",
             "bindedEvmAddress",
+            "chainId",
             "timestamp"
           ],
           "properties": {
             "bindedEvmAddress": {
               "type": "string",
               "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+            },
+            "chainId": {
+              "type": "integer",
+              "example": 1
             },
             "message": {
               "type": "string",
@@ -678,10 +682,6 @@
         "blockTime": {
           "type": "integer",
           "example": 1760624353
-        },
-        "chainId": {
-          "type": "integer",
-          "example": 1
         },
         "confirmNumber": {
           "type": "integer",
@@ -757,11 +757,17 @@
       "required": [
         "limit",
         "offset",
-        "orderDir"
+        "orderDir",
+        "hash"
       ],
       "properties": {
         "address": {
-          "type": "string"
+          "type": "string",
+          "example": "1828upaDhq7PxgRLMGnvZDimzjfzxLpG9x"
+        },
+        "hash": {
+          "type": "string",
+          "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
         },
         "limit": {
           "description": "Number of items per page",
@@ -894,7 +900,7 @@
       }
     }
   },
-  "x-date": "2025-11-14 16:09:11",
+  "x-date": "2025-11-18 13:35:07",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

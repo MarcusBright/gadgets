@@ -52,6 +52,9 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 			sql.Order("process_idx asc")
 		}
 	}
+	if req.Hash != "" {
+		sql.Where("transaction_hash = ?", req.Hash)
+	}
 	// sql.Where("confirm_number >= confirm_threshold")
 	if req.OrderDir == "desc" {
 		sql.Order("block_number desc")
@@ -70,7 +73,17 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 	var evmHashInfos []model.EvmHashInfo
 	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
 		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
-			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+			hashes := []string{}
+			if item.RecievedEvmTxHash != "" {
+				hashes = append(hashes, item.RecievedEvmTxHash)
+			}
+			if item.AcceptedEvmTxHash != "" {
+				hashes = append(hashes, item.AcceptedEvmTxHash)
+			}
+			if item.RejectedEvmTxHash != "" {
+				hashes = append(hashes, item.RejectedEvmTxHash)
+			}
+			return hashes
 		})).Find(&evmHashInfos).Error; err != nil {
 		return nil, err
 	}
@@ -109,7 +122,6 @@ func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign, evmHashInfo []m
 			BlockTime:        item.BlockTime,
 			ConfirmNumber:    item.ConfirmNumber,
 			ConfirmThreshold: item.ConfirmThreshold,
-			ChainId:          uint64(item.ChainId),
 			ReceiveInfo: func() *types.EvmHashInfo {
 				if evmHash, ok := evmHashInfoMap[item.RecievedEvmTxHash]; ok {
 					return &types.EvmHashInfo{
@@ -144,6 +156,7 @@ func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign, evmHashInfo []m
 						Signature:        sign.Signature,
 						Signer:           sign.Signer,
 						BindedEvmAddress: sign.BindedEvmAddress,
+						ChainId:          uint64(sign.ChainId),
 						Timestamp:        sign.CreatedAt.Unix(),
 					}
 				}
