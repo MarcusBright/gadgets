@@ -109,7 +109,6 @@ func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign, evmHashInfo []m
 			BlockTime:        item.BlockTime,
 			ConfirmNumber:    item.ConfirmNumber,
 			ConfirmThreshold: item.ConfirmThreshold,
-			BindedEvmAddress: item.BindedEvmAddress,
 			ChainId:          uint64(item.ChainId),
 			ReceiveInfo: func() *types.EvmHashInfo {
 				if evmHash, ok := evmHashInfoMap[item.RecievedEvmTxHash]; ok {
@@ -141,10 +140,11 @@ func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign, evmHashInfo []m
 			BindInfo: func() *types.BindInfo {
 				if sign, ok := signMap[item.TransactionHash]; ok {
 					return &types.BindInfo{
-						Message:   sign.Message,
-						Signature: sign.Signature,
-						Signer:    sign.Signer,
-						Timestamp: sign.CreatedAt.Unix(),
+						Message:          sign.Message,
+						Signature:        sign.Signature,
+						Signer:           sign.Signer,
+						BindedEvmAddress: sign.BindedEvmAddress,
+						Timestamp:        sign.CreatedAt.Unix(),
 					}
 				}
 				return nil

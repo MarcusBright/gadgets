@@ -277,9 +277,14 @@
         "message",
         "signature",
         "signer",
+        "bindedEvmAddress",
         "timestamp"
       ],
       "properties": {
+        "bindedEvmAddress": {
+          "type": "string",
+          "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+        },
         "message": {
           "type": "string",
           "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
@@ -355,7 +360,6 @@
             "blockTime",
             "confirmNumber",
             "confirmThreshold",
-            "bindedEvmAddress",
             "chainId"
           ],
           "properties": {
@@ -382,10 +386,6 @@
             "bindInfo": {
               "type": "object",
               "$ref": "#/definitions/BindInfo"
-            },
-            "bindedEvmAddress": {
-              "type": "string",
-              "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
             },
             "blockNumber": {
               "type": "integer",
@@ -601,7 +601,6 @@
         "blockTime",
         "confirmNumber",
         "confirmThreshold",
-        "bindedEvmAddress",
         "chainId"
       ],
       "properties": {
@@ -645,9 +644,14 @@
             "message",
             "signature",
             "signer",
+            "bindedEvmAddress",
             "timestamp"
           ],
           "properties": {
+            "bindedEvmAddress": {
+              "type": "string",
+              "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
+            },
             "message": {
               "type": "string",
               "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
@@ -666,10 +670,6 @@
             }
           },
           "$ref": "#/definitions/BindInfo"
-        },
-        "bindedEvmAddress": {
-          "type": "string",
-          "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
         },
         "blockNumber": {
           "type": "integer",
@@ -894,7 +894,7 @@
       }
     }
   },
-  "x-date": "2025-11-14 15:44:00",
+  "x-date": "2025-11-14 16:09:11",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

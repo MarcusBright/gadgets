@@ -13,10 +13,11 @@ type BindEvmAddressResp struct {
 }
 
 type BindInfo struct {
-	Message   string `json:"message,example={\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\",\"evmChainId\":560048,\"amount\":100000,\"signAddress\":\"tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c\",\"transactionHash\":\"cc6c33a990cc74f55349928cdbed562d903533f5167db49db8048e855307af4b\",\"ts\":1111111111}"`
-	Signature string `json:"signature,example=0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"`
-	Signer    string `json:"signer,example=tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"`
-	Timestamp int64  `json:"timestamp,example=1111111111"`
+	Message          string `json:"message,example={\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\",\"evmChainId\":560048,\"amount\":100000,\"signAddress\":\"tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c\",\"transactionHash\":\"cc6c33a990cc74f55349928cdbed562d903533f5167db49db8048e855307af4b\",\"ts\":1111111111}"`
+	Signature        string `json:"signature,example=0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"`
+	Signer           string `json:"signer,example=tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"`
+	BindedEvmAddress string `json:"bindedEvmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
+	Timestamp        int64  `json:"timestamp,example=1111111111"`
 }
 
 type EvmHashInfo struct {
@@ -76,7 +77,6 @@ type Task struct {
 	BlockTime        uint64       `json:"blockTime,example=1760624353"`
 	ConfirmNumber    uint64       `json:"confirmNumber,example=2"`
 	ConfirmThreshold uint64       `json:"confirmThreshold,example=4"`
-	BindedEvmAddress string       `json:"bindedEvmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
 	ChainId          uint64       `json:"chainId,example=1"`
 	ReceiveInfo      *EvmHashInfo `json:"receiveInfo,optional"`
 	ApproveInfo      *EvmHashInfo `json:"approveInfo,optional"`

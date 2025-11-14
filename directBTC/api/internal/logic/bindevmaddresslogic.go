@@ -230,24 +230,24 @@ func (l *BindEvmAddressLogic) validateBtcTrialAndWhitelist(message types.Message
 	}
 
 	if amountSatoshi+feeSatoshi != l.svcCtx.Config.TinyTry {
-		if !trialResp.TrialComplete || trialResp.TrialInfo == nil {
+		if !trialResp.TrialComplete || trialResp.TrialInfo == nil || trialResp.TrialInfo.BindInfo == nil {
 			return fmt.Errorf("trial not complete")
 		}
-		if trialResp.TrialInfo.BindedEvmAddress != message.EvmAddress {
+		if trialResp.TrialInfo.BindInfo.BindedEvmAddress != message.EvmAddress {
 			return fmt.Errorf("evmAddress not the trial address")
 		}
 		if in := l.checkEvmInContract(message.EvmAddress, uint(message.EvmChainId)); !in {
 			return fmt.Errorf("not in whitelist")
 		}
 	} else {
-		if trialResp.TrialInfo == nil {
+		if trialResp.TrialInfo == nil || trialResp.TrialInfo.BindInfo == nil {
 			return fmt.Errorf("sys wrong")
 		}
 		if trialResp.TrialInfo.Hash != message.TransactionHash {
 			if !trialResp.TrialComplete {
 				return fmt.Errorf("trial not complete")
 			}
-			if trialResp.TrialInfo.BindedEvmAddress != message.EvmAddress {
+			if trialResp.TrialInfo.BindInfo.BindedEvmAddress != message.EvmAddress {
 				return fmt.Errorf("evmAddress not the trial address")
 			}
 			if in := l.checkEvmInContract(message.EvmAddress, uint(message.EvmChainId)); !in {
