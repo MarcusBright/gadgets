@@ -271,19 +271,15 @@
         }
       }
     },
-    "BindSignInfo": {
+    "BindInfo": {
       "type": "object",
       "required": [
         "message",
         "signature",
         "signer",
-        "bindTime"
+        "timestamp"
       ],
       "properties": {
-        "bindTime": {
-          "type": "integer",
-          "example": 1111111111
-        },
         "message": {
           "type": "string",
           "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
@@ -295,6 +291,27 @@
         "signer": {
           "type": "string",
           "example": "tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"
+        },
+        "timestamp": {
+          "type": "integer",
+          "example": 1111111111
+        }
+      }
+    },
+    "EvmHashInfo": {
+      "type": "object",
+      "required": [
+        "hash",
+        "timestamp"
+      ],
+      "properties": {
+        "hash": {
+          "type": "string",
+          "example": "0x009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+        },
+        "timestamp": {
+          "type": "integer",
+          "example": 1111111111
         }
       }
     },
@@ -339,10 +356,7 @@
             "confirmNumber",
             "confirmThreshold",
             "bindedEvmAddress",
-            "chainId",
-            "recievedEventTxHash",
-            "acceptedEventTxHash",
-            "rejectedEventTxHash"
+            "chainId"
           ],
           "properties": {
             "InputAddress": {
@@ -357,17 +371,17 @@
                 "type": "string"
               }
             },
-            "acceptedEventTxHash": {
-              "type": "string",
-              "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-            },
             "amountSatoshi": {
               "type": "string",
               "example": "111000000"
             },
-            "bindSignInfo": {
+            "approveInfo": {
               "type": "object",
-              "$ref": "#/definitions/BindSignInfo"
+              "$ref": "#/definitions/EvmHashInfo"
+            },
+            "bindInfo": {
+              "type": "object",
+              "$ref": "#/definitions/BindInfo"
             },
             "bindedEvmAddress": {
               "type": "string",
@@ -405,13 +419,13 @@
               "type": "integer",
               "example": 1
             },
-            "recievedEventTxHash": {
-              "type": "string",
-              "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+            "receiveInfo": {
+              "type": "object",
+              "$ref": "#/definitions/EvmHashInfo"
             },
-            "rejectedEventTxHash": {
-              "type": "string",
-              "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+            "rejectInfo": {
+              "type": "object",
+              "$ref": "#/definitions/EvmHashInfo"
             },
             "status": {
               "type": "string",
@@ -588,10 +602,7 @@
         "confirmNumber",
         "confirmThreshold",
         "bindedEvmAddress",
-        "chainId",
-        "recievedEventTxHash",
-        "acceptedEventTxHash",
-        "rejectedEventTxHash"
+        "chainId"
       ],
       "properties": {
         "InputAddress": {
@@ -606,27 +617,37 @@
             "type": "string"
           }
         },
-        "acceptedEventTxHash": {
-          "type": "string",
-          "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
-        },
         "amountSatoshi": {
           "type": "string",
           "example": "111000000"
         },
-        "bindSignInfo": {
+        "approveInfo": {
+          "type": "object",
+          "required": [
+            "hash",
+            "timestamp"
+          ],
+          "properties": {
+            "hash": {
+              "type": "string",
+              "example": "0x009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+            },
+            "timestamp": {
+              "type": "integer",
+              "example": 1111111111
+            }
+          },
+          "$ref": "#/definitions/EvmHashInfo"
+        },
+        "bindInfo": {
           "type": "object",
           "required": [
             "message",
             "signature",
             "signer",
-            "bindTime"
+            "timestamp"
           ],
           "properties": {
-            "bindTime": {
-              "type": "integer",
-              "example": 1111111111
-            },
             "message": {
               "type": "string",
               "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
@@ -638,9 +659,13 @@
             "signer": {
               "type": "string",
               "example": "tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"
+            },
+            "timestamp": {
+              "type": "integer",
+              "example": 1111111111
             }
           },
-          "$ref": "#/definitions/BindSignInfo"
+          "$ref": "#/definitions/BindInfo"
         },
         "bindedEvmAddress": {
           "type": "string",
@@ -678,13 +703,41 @@
           "type": "integer",
           "example": 1
         },
-        "recievedEventTxHash": {
-          "type": "string",
-          "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+        "receiveInfo": {
+          "type": "object",
+          "required": [
+            "hash",
+            "timestamp"
+          ],
+          "properties": {
+            "hash": {
+              "type": "string",
+              "example": "0x009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+            },
+            "timestamp": {
+              "type": "integer",
+              "example": 1111111111
+            }
+          },
+          "$ref": "#/definitions/EvmHashInfo"
         },
-        "rejectedEventTxHash": {
-          "type": "string",
-          "example": "0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"
+        "rejectInfo": {
+          "type": "object",
+          "required": [
+            "hash",
+            "timestamp"
+          ],
+          "properties": {
+            "hash": {
+              "type": "string",
+              "example": "0x009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+            },
+            "timestamp": {
+              "type": "integer",
+              "example": 1111111111
+            }
+          },
+          "$ref": "#/definitions/EvmHashInfo"
         },
         "status": {
           "type": "string",
@@ -841,7 +894,7 @@
       }
     }
   },
-  "x-date": "2025-11-14 14:43:45",
+  "x-date": "2025-11-14 15:44:00",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

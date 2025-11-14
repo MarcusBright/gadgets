@@ -32,30 +32,34 @@ type (
 		Data []Task `json:"data"`
 	}
 	Task {
-		ID                  uint64        `json:"id,example=1"`
-		Hash                string        `json:"hash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
-		TreasuryAddress     []string      `json:"treasuryAddress,example=["1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac","1MAvJ4pE1EkgN4CS7HFq7r65eoaTu8qxXM"]"`
-		AmountSatoshi       string        `json:"amountSatoshi,example=111000000"`
-		FeeSatoshi          string        `json:"feeSatoshi,example=100"`
-		InputAddress        []string      `json:"inputAddress,example=["1828upaDhq7PxgRLMGnvZDimzjfzxLpG9x","1PRhw1EnWJJ894qqSb8XrNKz1vtPw76kV5"]"`
-		Status              string        `json:"status,example=binded,options=init|binded|receivedInEvm|approvedInEvm|rejectedInEvm"`
-		BlockNumber         uint64        `json:"blockNumber,example=919346"`
-		BlockTime           uint64        `json:"blockTime,example=1760624353"`
-		ConfirmNumber       uint64        `json:"confirmNumber,example=2"`
-		ConfirmThreshold    uint64        `json:"confirmThreshold,example=4"`
-		BindedEvmAddress    string        `json:"bindedEvmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
-		ChainId             uint64        `json:"chainId,example=1"`
-		RecievedEventTxHash string        `json:"recievedEventTxHash,example=0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"`
-		AcceptedEventTxHash string        `json:"acceptedEventTxHash,example=0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"`
-		RejectedEventTxHash string        `json:"rejectedEventTxHash,example=0x5bcc753029e4a0b558e9cd04137f2e0692a9c1177b40bf7dd887b6aace476bc9"`
-		BindSignInfo        *BindSignInfo `json:"bindSignInfo,optional"`
+		ID               uint64       `json:"id,example=1"`
+		Hash             string       `json:"hash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
+		TreasuryAddress  []string     `json:"treasuryAddress,example=["1FezX8fEuSU3LDsjxRKpAeyyrPUjyCs3ac","1MAvJ4pE1EkgN4CS7HFq7r65eoaTu8qxXM"]"`
+		AmountSatoshi    string       `json:"amountSatoshi,example=111000000"`
+		FeeSatoshi       string       `json:"feeSatoshi,example=100"`
+		InputAddress     []string     `json:"inputAddress,example=["1828upaDhq7PxgRLMGnvZDimzjfzxLpG9x","1PRhw1EnWJJ894qqSb8XrNKz1vtPw76kV5"]"`
+		Status           string       `json:"status,example=binded,options=init|binded|receivedInEvm|approvedInEvm|rejectedInEvm"`
+		BlockNumber      uint64       `json:"blockNumber,example=919346"`
+		BlockTime        uint64       `json:"blockTime,example=1760624353"`
+		ConfirmNumber    uint64       `json:"confirmNumber,example=2"`
+		ConfirmThreshold uint64       `json:"confirmThreshold,example=4"`
+		BindedEvmAddress string       `json:"bindedEvmAddress,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
+		ChainId          uint64       `json:"chainId,example=1"`
+		ReceiveInfo      *EvmHashInfo `json:"receiveInfo,optional"`
+		ApproveInfo      *EvmHashInfo `json:"approveInfo,optional"`
+		RejectInfo       *EvmHashInfo `json:"rejectInfo,optional"`
+		BindInfo         *BindInfo    `json:"bindInfo,optional"`
 	// Signature           string `json:"signature,example=0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"`
 	}
-	BindSignInfo {
+	BindInfo {
 		Message   string `json:"message,example={\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\",\"evmChainId\":560048,\"amount\":100000,\"signAddress\":\"tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c\",\"transactionHash\":\"cc6c33a990cc74f55349928cdbed562d903533f5167db49db8048e855307af4b\",\"ts\":1111111111}"`
 		Signature string `json:"signature,example=0x56a190efbf79ef6f4fd1144063715247bc052fbcc8e4e3ea42a6fd8d16d0c7ad46aa039ae232c23e2ef8b644b3d2339782fbb095bc5b9c7f36d458610d00a0941b"`
 		Signer    string `json:"signer,example=tb1qh8rfl9w04us7djn8jmy08eh6zt3r7vajsgfv6c"`
-		BindTime  int64  `json:"bindTime,example=1111111111"`
+		Timestamp int64  `json:"timestamp,example=1111111111"`
+	}
+	EvmHashInfo {
+		Hash      string `json:"hash,example=0x009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
+		Timestamp int64  `json:"timestamp,example=1111111111"`
 	}
 )
 

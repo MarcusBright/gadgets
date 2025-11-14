@@ -48,6 +48,13 @@ type BindEvmSign struct {
 	BtcTranHash      string `gorm:"size:255;default:'';index:hash,unique"`
 }
 
+type EvmHashInfo struct {
+	gorm.Model
+	TransactionHash string `gorm:"size:255;default:'';index:chain_hash"`
+	BlockNumber     uint64 `gorm:"default:0"`
+	BlockTime       uint64 `gorm:"default:0"`
+}
+
 const (
 	CursorEvmLogScan = "evmLogScan"
 )

@@ -72,6 +72,8 @@ func (l *GetBtcAddressIsTrialLogic) GetBtcAddressIsTrial(req *types.GetBtcAddres
 func (l *GetBtcAddressIsTrialLogic) collectTrialItems(address string) ([]types.Task, error) {
 	var btcTasks []model.BtcTran
 	var bindEvmSigns []model.BindEvmSign
+	var evmHashInfos []model.EvmHashInfo
+
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
 	// sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", address)
 	sql.Where("input0 = ?", address)
@@ -87,13 +89,21 @@ func (l *GetBtcAddressIsTrialLogic) collectTrialItems(address string) ([]types.T
 		})).Find(&bindEvmSigns).Error; err != nil {
 		return nil, err
 	}
-	return ItemsToTask(btcTasks, bindEvmSigns), nil
+
+	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
+		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
+			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+		})).Find(&evmHashInfos).Error; err != nil {
+		return nil, err
+	}
+	return ItemsToTask(btcTasks, bindEvmSigns, evmHashInfos), nil
 }
 
 func (l *GetBtcAddressIsTrialLogic) v1GetBtcAddressIsTrial(req *types.GetBtcAddressIsTrialReq) (resp *types.GetBtcAddressIsTrialResp, err error) {
 	var /*memBtcTask,*/ btcTasks []model.BtcTran
 	// _ = l.svcCtx.MemDB.WithContext(l.ctx).Model(&model.BtcTran{}).Find(&memBtcTask).Error
 	var bindEvmSigns []model.BindEvmSign
+	var evmHashInfos []model.EvmHashInfo
 	resp = &types.GetBtcAddressIsTrialResp{
 		Address: req.Address,
 	}
@@ -114,7 +124,14 @@ func (l *GetBtcAddressIsTrialLogic) v1GetBtcAddressIsTrial(req *types.GetBtcAddr
 		})).Find(&bindEvmSigns).Error; err != nil {
 		return nil, err
 	}
-	item := ItemsToTask(btcTasks, bindEvmSigns)
+
+	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
+		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
+			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+		})).Find(&evmHashInfos).Error; err != nil {
+		return nil, err
+	}
+	item := ItemsToTask(btcTasks, bindEvmSigns, evmHashInfos)
 	if len(item) > 0 && item[0].Status == model.BtcTranStatusApprovedInEvm {
 		resp.TrialComplete = true
 	}

@@ -21,6 +21,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Scanner struct {
@@ -144,6 +145,16 @@ func (s *Scanner) LogScan() {
 					logx.Errorf("update btc tran failed, hash: %v, err: %v", event.BtcTransaction, err)
 					return err
 				}
+				//save evm transaction
+				if err := tx.Clauses(clause.OnConflict{DoNothing: true}).Model(&model.EvmHashInfo{}).Create(&model.EvmHashInfo{
+					ChainId:         chain.Client.ChainId,
+					TransactionHash: event.EventHash,
+					BlockNumber:     event.EventBlockNumber,
+					BlockTime:       event.EventBlockTime,
+				}).Error; err != nil {
+					logx.Errorf("create evmHashInfo failed, hash: %v, err: %v", event.EventHash, err)
+					return err
+				}
 				slack.SendTo(s.config.NotifySlack, fmt.Sprintf("btcHash[%v] status to %v, evm hash[%v]", event.BtcTransaction, status, event.EventHash))
 			}
 			//save cursor
@@ -169,6 +180,8 @@ type MinterEvent struct {
 	Recipient         string
 	Amount            string
 	EventHash         string
+	EventBlockNumber  uint64
+	EventBlockTime    uint64
 }
 
 func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.Client) ([]*MinterEvent, error) {
@@ -206,6 +219,8 @@ func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.C
 				Recipient:         receivedEvent.Recipient.Hex(),
 				Amount:            receivedEvent.Amount.String(),
 				EventHash:         log.TxHash.Hex(),
+				EventBlockNumber:  log.BlockNumber,
+				EventBlockTime:    log.BlockTimestamp,
 			})
 			index++
 		case "Accepted":
@@ -221,6 +236,8 @@ func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.C
 				Recipient:         acceptedEvent.Recipient.Hex(),
 				Amount:            acceptedEvent.Amount.String(),
 				EventHash:         log.TxHash.Hex(),
+				EventBlockNumber:  log.BlockNumber,
+				EventBlockTime:    log.BlockTimestamp,
 			})
 		case "Rejected":
 			rejectedEvent, err := s.directBTCMinter.ParseRejected(log)
@@ -235,6 +252,8 @@ func (s *Scanner) processLogs(logs []types.Log, index int64, client *ethclient.C
 				Recipient:         rejectedEvent.Recipient.Hex(),
 				Amount:            rejectedEvent.Amount.String(),
 				EventHash:         log.TxHash.Hex(),
+				EventBlockNumber:  log.BlockNumber,
+				EventBlockTime:    log.BlockTimestamp,
 			})
 		}
 	}

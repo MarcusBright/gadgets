@@ -67,16 +67,27 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 		})).Find(&bindEvmSigns).Error; err != nil {
 		return nil, err
 	}
+	var evmHashInfos []model.EvmHashInfo
+	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
+		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
+			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+		})).Find(&evmHashInfos).Error; err != nil {
+		return nil, err
+	}
 
-	resp.Data = ItemsToTask(btcTasks, bindEvmSigns)
+	resp.Data = ItemsToTask(btcTasks, bindEvmSigns, evmHashInfos)
 
 	return
 }
 
-func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign) []types.Task {
+func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign, evmHashInfo []model.EvmHashInfo) []types.Task {
 	signMap := lo.SliceToMap(sign, func(item model.BindEvmSign) (string, model.BindEvmSign) {
 		return item.BtcTranHash, item
 	})
+	evmHashInfoMap := lo.SliceToMap(evmHashInfo, func(item model.EvmHashInfo) (string, model.EvmHashInfo) {
+		return item.TransactionHash, item
+	})
+
 	return lo.Map(item, func(item model.BtcTran, index int) types.Task {
 		return types.Task{
 			ID:   uint64(item.ID),
@@ -93,23 +104,47 @@ func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign) []types.Task {
 				_ = json.Unmarshal(item.InputUtxo, &addrs)
 				return addrs
 			}(),
-			Status:              item.Status,
-			BlockNumber:         item.BlockNumber,
-			BlockTime:           item.BlockTime,
-			ConfirmNumber:       item.ConfirmNumber,
-			ConfirmThreshold:    item.ConfirmThreshold,
-			BindedEvmAddress:    item.BindedEvmAddress,
-			ChainId:             uint64(item.ChainId),
-			RecievedEventTxHash: item.RecievedEvmTxHash,
-			AcceptedEventTxHash: item.AcceptedEvmTxHash,
-			RejectedEventTxHash: item.RejectedEvmTxHash,
-			BindSignInfo: func() *types.BindSignInfo {
+			Status:           item.Status,
+			BlockNumber:      item.BlockNumber,
+			BlockTime:        item.BlockTime,
+			ConfirmNumber:    item.ConfirmNumber,
+			ConfirmThreshold: item.ConfirmThreshold,
+			BindedEvmAddress: item.BindedEvmAddress,
+			ChainId:          uint64(item.ChainId),
+			ReceiveInfo: func() *types.EvmHashInfo {
+				if evmHash, ok := evmHashInfoMap[item.RecievedEvmTxHash]; ok {
+					return &types.EvmHashInfo{
+						Hash:      evmHash.TransactionHash,
+						Timestamp: int64(evmHash.BlockTime),
+					}
+				}
+				return nil
+			}(),
+			ApproveInfo: func() *types.EvmHashInfo {
+				if evmHash, ok := evmHashInfoMap[item.AcceptedEvmTxHash]; ok {
+					return &types.EvmHashInfo{
+						Hash:      evmHash.TransactionHash,
+						Timestamp: int64(evmHash.BlockTime),
+					}
+				}
+				return nil
+			}(),
+			RejectInfo: func() *types.EvmHashInfo {
+				if evmHash, ok := evmHashInfoMap[item.RejectedEvmTxHash]; ok {
+					return &types.EvmHashInfo{
+						Hash:      evmHash.TransactionHash,
+						Timestamp: int64(evmHash.BlockTime),
+					}
+				}
+				return nil
+			}(),
+			BindInfo: func() *types.BindInfo {
 				if sign, ok := signMap[item.TransactionHash]; ok {
-					return &types.BindSignInfo{
+					return &types.BindInfo{
 						Message:   sign.Message,
 						Signature: sign.Signature,
 						Signer:    sign.Signer,
-						BindTime:  sign.CreatedAt.Unix(),
+						Timestamp: sign.CreatedAt.Unix(),
 					}
 				}
 				return nil
