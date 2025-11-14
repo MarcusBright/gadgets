@@ -147,7 +147,6 @@ func (s *Scanner) LogScan() {
 				}
 				//save evm transaction
 				if err := tx.Clauses(clause.OnConflict{DoNothing: true}).Model(&model.EvmHashInfo{}).Create(&model.EvmHashInfo{
-					ChainId:         chain.Client.ChainId,
 					TransactionHash: event.EventHash,
 					BlockNumber:     event.EventBlockNumber,
 					BlockTime:       event.EventBlockTime,
