@@ -56,12 +56,12 @@ func (s *Scanner) NewTrans() {
 	logx.Infof("GetAllBtcAddress: %v", len(btcAddress))
 
 	for _, addr := range btcAddress {
-		logx.Infof("GetAddressNewTransactions address: %s", addr.Address)
 		txs, err := s.client.GetAddressNewTransactions(addr.Address, addr.Txhash)
 		if err != nil {
 			logx.Errorf("GetAddressNewTransactions failed: %v", err)
 			continue
 		}
+		logx.Infof("GetAddressNewTransactions address: %s", addr.Address)
 		group := lo.GroupBy(txs, func(item mempoolspace.AddressTransaction) string {
 			if item.Status.Confirmed {
 				return "mined"
@@ -75,8 +75,8 @@ func (s *Scanner) NewTrans() {
 		mempoolAddrTrans := s.filterAndMapTrans(mempoolGroup, lo.Map(btcAddress, func(item model.Cursor, _ int) string {
 			return item.Address
 		}))
-		logx.Infof("GetAddressNewTransactions mempoolGroup: %d, minedGroup: %d, minedAddrTrans: %d, mempoolAddrTrans: %d",
-			len(mempoolGroup), len(minedGroup), len(minedAddrTrans), len(mempoolAddrTrans))
+		logx.Infof("GetAddressNewTransactions address: %s, mempoolGroup: %d, minedGroup: %d, minedAddrTrans: %d, mempoolAddrTrans: %d",
+			addr.Address, len(mempoolGroup), len(minedGroup), len(minedAddrTrans), len(mempoolAddrTrans))
 		newTrans := append(mempoolAddrTrans, minedAddrTrans...)
 		newTrans = lo.UniqBy(newTrans, func(item model.BtcTran) string {
 			return item.TransactionHash
