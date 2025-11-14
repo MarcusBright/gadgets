@@ -92,7 +92,17 @@ func (l *GetBtcAddressIsTrialLogic) collectTrialItems(address string) ([]types.T
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
 		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
-			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+			hashes := []string{}
+			if item.RecievedEvmTxHash != "" {
+				hashes = append(hashes, item.RecievedEvmTxHash)
+			}
+			if item.AcceptedEvmTxHash != "" {
+				hashes = append(hashes, item.AcceptedEvmTxHash)
+			}
+			if item.RejectedEvmTxHash != "" {
+				hashes = append(hashes, item.RejectedEvmTxHash)
+			}
+			return hashes
 		})).Find(&evmHashInfos).Error; err != nil {
 		return nil, err
 	}
@@ -127,7 +137,17 @@ func (l *GetBtcAddressIsTrialLogic) v1GetBtcAddressIsTrial(req *types.GetBtcAddr
 
 	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
 		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
-			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+			hashes := []string{}
+			if item.RecievedEvmTxHash != "" {
+				hashes = append(hashes, item.RecievedEvmTxHash)
+			}
+			if item.AcceptedEvmTxHash != "" {
+				hashes = append(hashes, item.AcceptedEvmTxHash)
+			}
+			if item.RejectedEvmTxHash != "" {
+				hashes = append(hashes, item.RejectedEvmTxHash)
+			}
+			return hashes
 		})).Find(&evmHashInfos).Error; err != nil {
 		return nil, err
 	}

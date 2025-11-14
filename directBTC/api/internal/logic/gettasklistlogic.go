@@ -70,7 +70,17 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 	var evmHashInfos []model.EvmHashInfo
 	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
 		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
-			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+			hashes := []string{}
+			if item.RecievedEvmTxHash != "" {
+				hashes = append(hashes, item.RecievedEvmTxHash)
+			}
+			if item.AcceptedEvmTxHash != "" {
+				hashes = append(hashes, item.AcceptedEvmTxHash)
+			}
+			if item.RejectedEvmTxHash != "" {
+				hashes = append(hashes, item.RejectedEvmTxHash)
+			}
+			return hashes
 		})).Find(&evmHashInfos).Error; err != nil {
 		return nil, err
 	}
