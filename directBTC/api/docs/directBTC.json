@@ -276,9 +276,14 @@
       "required": [
         "message",
         "signature",
-        "signer"
+        "signer",
+        "bindTime"
       ],
       "properties": {
+        "bindTime": {
+          "type": "integer",
+          "example": 1111111111
+        },
         "message": {
           "type": "string",
           "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
@@ -614,9 +619,14 @@
           "required": [
             "message",
             "signature",
-            "signer"
+            "signer",
+            "bindTime"
           ],
           "properties": {
+            "bindTime": {
+              "type": "integer",
+              "example": 1111111111
+            },
             "message": {
               "type": "string",
               "example": "{\"evmAddress\":\"0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD\""
@@ -831,7 +841,7 @@
       }
     }
   },
-  "x-date": "2025-11-13 15:28:27",
+  "x-date": "2025-11-14 14:43:45",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

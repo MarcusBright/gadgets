@@ -109,6 +109,7 @@ func ItemsToTask(item []model.BtcTran, sign []model.BindEvmSign) []types.Task {
 						Message:   sign.Message,
 						Signature: sign.Signature,
 						Signer:    sign.Signer,
+						BindTime:  sign.CreatedAt.Unix(),
 					}
 				}
 				return nil
