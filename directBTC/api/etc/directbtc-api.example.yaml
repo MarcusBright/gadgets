@@ -94,6 +94,7 @@ middlewares:
   gunzip: false
 traceignorepaths: []
 datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
+sqllog: false
 logslack: ""
 notifyslack: ""
 sysevmaddress: []
@@ -101,6 +102,7 @@ tinytry: 0
 btcscan:
   confirmthreshold: 4
   datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
+  sqllog: false
   feesatoshi: 100
   mempoolclient:
     host: http://127.0.0.1:80
@@ -111,6 +113,7 @@ btcscan:
   network: ""
 evmscan:
   datasource: root:123456@tcp(127.0.0.1:3306)/gozero?charset=utf8mb4&parseTime=True&loc=Local
+  sqllog: false
   chaininfo: []
   logsscanspec: ""
   notifyslack: ""

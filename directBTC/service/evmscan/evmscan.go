@@ -32,9 +32,10 @@ type Scanner struct {
 }
 
 func NewScanner(c *config.Config) *Scanner {
-	db, err := gorm.Open(mysql.Open(c.DataSource), &gorm.Config{
-		Logger: gormz.NewGormLogger(),
-	})
+	db, err := gorm.Open(mysql.Open(c.DataSource))
+	if c.SqlLog {
+		db.Logger = gormz.NewGormLogger()
+	}
 	logx.Must(err)
 	evmClients := lo.Map(c.ChainInfo, func(item config.ChainInfo, index int) *ethclient.Client {
 		return goeth.NewClient(item.Client.Host, item.Client.Request, item.Client.PeriodSec)

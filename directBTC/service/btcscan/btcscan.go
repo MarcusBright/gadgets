@@ -25,9 +25,10 @@ type Scanner struct {
 }
 
 func NewScanner(c *config.Config) *Scanner {
-	db, err := gorm.Open(mysql.Open(c.DataSource), &gorm.Config{
-		Logger: gormz.NewGormLogger(),
-	})
+	db, err := gorm.Open(mysql.Open(c.DataSource))
+	if c.SqlLog {
+		db.Logger = gormz.NewGormLogger()
+	}
 	logx.Must(err)
 
 	// memoryDB, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{

@@ -2,6 +2,7 @@ package config
 
 type Config struct {
 	DataSource   string `json:",inherit"`
+	SqlLog       bool   `json:",optional,default=false,inherit"`
 	ChainInfo    []ChainInfo
 	LogsScanSpec string
 	NotifySlack  string `json:",optional"`

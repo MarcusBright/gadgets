@@ -31,9 +31,10 @@ type ChainIdClient struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	db, err := gorm.Open(mysql.Open(c.DataSource), &gorm.Config{
-		Logger: gormz.NewGormLogger(),
-	})
+	db, err := gorm.Open(mysql.Open(c.DataSource))
+	if c.SqlLog {
+		db.Logger = gormz.NewGormLogger()
+	}
 	logx.Must(err)
 
 	evmClients := lo.Map(c.EvmScan.ChainInfo, func(item evmconfig.ChainInfo, index int) *ChainIdClient {

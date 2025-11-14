@@ -82,7 +82,7 @@ func (l *BindEvmAddressLogic) BindEvmAddress(req *types.BindEvmAddressReq) (resp
 	resp = &types.BindEvmAddressResp{
 		Message: message,
 	}
-	slack.SendTo(l.svcCtx.Config.NotifySlack, "new bind, need check and recieve")
+	go slack.SendTo(l.svcCtx.Config.NotifySlack, "new bind, need check and recieve")
 	return resp, nil
 }
 

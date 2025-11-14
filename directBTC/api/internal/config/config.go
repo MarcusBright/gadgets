@@ -13,6 +13,7 @@ import (
 type Config struct {
 	rest.RestConf
 	DataSource    string
+	SqlLog        bool     `json:",optional,default=false"`
 	LogSlack      string   `json:",optional"`
 	NotifySlack   string   `json:",optional"`
 	SysEvmAddress []string `json:",optional"`

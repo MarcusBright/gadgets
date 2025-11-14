@@ -73,8 +73,10 @@ func (l *GetBtcAddressIsTrialLogic) collectTrialItems(address string) ([]types.T
 	var btcTasks []model.BtcTran
 	var bindEvmSigns []model.BindEvmSign
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
-	sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", address)
+	// sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", address)
+	sql.Where("input0 = ?", address)
 	if err := sql.Where("CAST(amount_satoshi AS UNSIGNED) + CAST(fee_satoshi AS UNSIGNED) = ?", l.svcCtx.Config.TinyTry).
+		Where("trial_skip = ?", false).
 		Order("block_time").Order("id desc").Find(&btcTasks).Error; err != nil {
 		return nil, err
 	}
@@ -97,10 +99,11 @@ func (l *GetBtcAddressIsTrialLogic) v1GetBtcAddressIsTrial(req *types.GetBtcAddr
 	}
 
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
-	sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", req.Address)
+	// sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", req.Address)
+	sql.Where("input0 = ?", req.Address)
 	if err := sql.Where("CAST(amount_satoshi AS UNSIGNED) + CAST(fee_satoshi AS UNSIGNED) = ?", l.svcCtx.Config.TinyTry).
-		Order("block_time").
-		Order("id desc").Limit(1).
+		Where("trial_skip = ?", false).
+		Order("block_time").Order("id desc").Limit(1).
 		Find(&btcTasks).Error; err != nil {
 		return nil, err
 	}

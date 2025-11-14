@@ -3,6 +3,7 @@ package config
 type Config struct {
 	ConfirmThreshold uint64
 	DataSource       string `json:",inherit"`
+	SqlLog           bool   `json:",optional,default=false,inherit"`
 	FeeSatoshi       int64  `json:",default=0"`
 	MempoolClient    MempoolClient
 	MemScanSpec      string

@@ -20,9 +20,10 @@ type BtcTran struct {
 	AmountSatoshi    string         `gorm:"default:'0'"`
 	FeeSatoshi       string         `gorm:"default:'0'"`
 	InputUtxo        datatypes.JSON `gorm:"not null"` //[]string, address
+	Input0           string         `gorm:"->;type:VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(input_utxo, '$[0]'))) STORED;index:input;default:(-);"`
 	Status           string         `gorm:"default:'init'"`
 	BlockNumber      uint64         `gorm:"default:0"`
-	BlockTime        uint64         `gorm:"default:0"`
+	BlockTime        uint64         `gorm:"default:0;index:blocktime"`
 	ConfirmNumber    uint64         `gorm:"default:0"`
 	ConfirmThreshold uint64         `gorm:"default:0"`
 	// Evm info
@@ -31,8 +32,9 @@ type BtcTran struct {
 	RecievedEvmTxHash string `gorm:"size:255;default:''"`
 	AcceptedEvmTxHash string `gorm:"size:255;default:''"`
 	RejectedEvmTxHash string `gorm:"size:255;default:''"`
-	ProcessIdx        uint64 `gorm:"default:0"` //when recievedEvm
+	ProcessIdx        uint64 `gorm:"default:0;index:processId"` //when recievedEvm
 	Signature         string `gorm:"size:255;default:''"`
+	TrialSkip         bool   `gorm:"default:false"`
 }
 
 type BindEvmSign struct {

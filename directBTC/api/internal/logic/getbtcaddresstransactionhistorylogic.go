@@ -40,7 +40,8 @@ func (l *GetBtcAddressTransactionHistoryLogic) GetBtcAddressTransactionHistory(r
 	var btcTasks []model.BtcTran
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
 	if req.Address != "" {
-		sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", req.Address)
+		// sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", req.Address)
+		sql.Where("input0 = ?", req.Address)
 	}
 	if err := sql.Count(&resp.Total).Order("block_time desc").Order("id desc").
 		Limit(req.Limit).Offset(req.Offset).Find(&btcTasks).Error; err != nil {

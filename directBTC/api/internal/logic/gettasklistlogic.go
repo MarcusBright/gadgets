@@ -43,7 +43,8 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
 	if req.Address != "" {
-		sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", req.Address)
+		// sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", req.Address)
+		sql.Where("input0 = ?", req.Address)
 	}
 	if len(req.Status) != 0 {
 		sql.Where("status IN ?", req.Status)
