@@ -757,8 +757,7 @@
       "required": [
         "limit",
         "offset",
-        "orderDir",
-        "hash"
+        "orderDir"
       ],
       "properties": {
         "address": {
@@ -900,7 +899,7 @@
       }
     }
   },
-  "x-date": "2025-11-18 13:35:07",
+  "x-date": "2025-11-18 13:40:55",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

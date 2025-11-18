@@ -89,7 +89,7 @@ type TaskListReq struct {
 	Status   []string `json:"status,optional,options=init|binded|receivedInEvm|approvedInEvm|rejectedInEvm"`
 	OrderDir string   `json:"orderDir,options=asc|desc,default=desc"`
 	Address  string   `json:"address,optional,example=1828upaDhq7PxgRLMGnvZDimzjfzxLpG9x"`
-	Hash     string   `json:"hash,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
+	Hash     string   `json:"hash,optional,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
 }
 
 type TaskListResp struct {
