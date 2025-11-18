@@ -42,9 +42,9 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 	var bindEvmSigns []model.BindEvmSign
 
 	sql := l.svcCtx.DB.WithContext(l.ctx).Model(&model.BtcTran{})
-	if req.Address != "" {
+	if req.BtcAddress != "" {
 		// sql.Where("JSON_EXTRACT(input_utxo, '$[0]') = ?", req.Address)
-		sql.Where("input0 = ?", req.Address)
+		sql.Where("input0 = ?", req.BtcAddress)
 	}
 	if len(req.Status) != 0 {
 		sql.Where("status IN ?", req.Status)
@@ -52,8 +52,11 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 			sql.Order("process_idx asc")
 		}
 	}
-	if req.Hash != "" {
-		sql.Where("transaction_hash = ?", req.Hash)
+	if req.BtcHash != "" {
+		sql.Where("transaction_hash = ?", req.BtcHash)
+	}
+	if req.EvmAddress != "" {
+		sql.Where("binded_evm_address = ?", req.EvmAddress)
 	}
 	// sql.Where("confirm_number >= confirm_threshold")
 	if req.OrderDir == "desc" {

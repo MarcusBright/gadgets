@@ -760,13 +760,17 @@
         "orderDir"
       ],
       "properties": {
-        "address": {
+        "btcAddress": {
           "type": "string",
           "example": "1828upaDhq7PxgRLMGnvZDimzjfzxLpG9x"
         },
-        "hash": {
+        "btcHash": {
           "type": "string",
           "example": "27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"
+        },
+        "evmAddress": {
+          "type": "string",
+          "example": "0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"
         },
         "limit": {
           "description": "Number of items per page",
@@ -899,7 +903,7 @@
       }
     }
   },
-  "x-date": "2025-11-18 13:40:55",
+  "x-date": "2025-11-18 15:00:52",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",
