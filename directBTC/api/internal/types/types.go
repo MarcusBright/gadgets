@@ -86,11 +86,12 @@ type Task struct {
 
 type TaskListReq struct {
 	ListReq
-	Status     []string `json:"status,optional,options=init|binded|receivedInEvm|approvedInEvm|rejectedInEvm"`
-	OrderDir   string   `json:"orderDir,options=asc|desc,default=desc"`
-	BtcAddress string   `json:"btcAddress,optional,example=1828upaDhq7PxgRLMGnvZDimzjfzxLpG9x"`
-	EvmAddress string   `json:"evmAddress,optional,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
-	BtcHash    string   `json:"btcHash,optional,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
+	Status        []string `json:"status,optional,options=init|binded|receivedInEvm|approvedInEvm|rejectedInEvm"`
+	OrderDir      string   `json:"orderDir,options=asc|desc,default=desc"`
+	BtcAddress    string   `json:"btcAddress,optional,example=1828upaDhq7PxgRLMGnvZDimzjfzxLpG9x"`
+	EvmAddress    string   `json:"evmAddress,optional,example=0xbf63Fba8137ce3043289f1BDbdC1700f65ee1aAD"`
+	BtcHash       string   `json:"btcHash,optional,example=27bcb9009c68b677e45700f035e9f2b79b1d57cba1b35a45d07234839dae446a"`
+	OnlyConfirmed bool     `json:"onlyConfirmed,optional,options=true|false,default=false"`
 }
 
 type TaskListResp struct {

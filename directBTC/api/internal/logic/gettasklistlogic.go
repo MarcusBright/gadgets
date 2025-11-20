@@ -58,7 +58,9 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 	if req.EvmAddress != "" {
 		sql.Where("binded_evm_address = ?", req.EvmAddress)
 	}
-	// sql.Where("confirm_number >= confirm_threshold")
+	if req.OnlyConfirmed {
+		sql.Where("confirm_number >= confirm_threshold")
+	}
 	if req.OrderDir == "desc" {
 		sql.Order("block_number desc")
 	} else {
@@ -75,19 +77,9 @@ func (l *GetTaskListLogic) GetTaskList(req *types.TaskListReq) (resp *types.Task
 	}
 	var evmHashInfos []model.EvmHashInfo
 	if err := l.svcCtx.DB.WithContext(l.ctx).Model(&model.EvmHashInfo{}).
-		Where("transaction_hash IN ?", lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
-			hashes := []string{}
-			if item.RecievedEvmTxHash != "" {
-				hashes = append(hashes, item.RecievedEvmTxHash)
-			}
-			if item.AcceptedEvmTxHash != "" {
-				hashes = append(hashes, item.AcceptedEvmTxHash)
-			}
-			if item.RejectedEvmTxHash != "" {
-				hashes = append(hashes, item.RejectedEvmTxHash)
-			}
-			return hashes
-		})).Find(&evmHashInfos).Error; err != nil {
+		Where("transaction_hash IN ?", lo.Compact(lo.FlatMap(btcTasks, func(item model.BtcTran, index int) []string {
+			return []string{item.RecievedEvmTxHash, item.AcceptedEvmTxHash, item.RejectedEvmTxHash}
+		}))).Find(&evmHashInfos).Error; err != nil {
 		return nil, err
 	}
 

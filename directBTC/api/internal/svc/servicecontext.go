@@ -5,6 +5,7 @@ package svc
 
 import (
 	"directBTC/api/internal/config"
+	"directBTC/api/internal/middleware"
 	"directBTC/clientrpc/goeth"
 	"directBTC/pkg/gormz"
 
@@ -13,14 +14,16 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/samber/lo"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/rest"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 type ServiceContext struct {
-	Config        config.Config
-	DB            *gorm.DB
-	EvmClientsMap map[uint]*ChainIdClient
+	Config                config.Config
+	DB                    *gorm.DB
+	EvmClientsMap         map[uint]*ChainIdClient
+	DefaultJsonMiddleware rest.Middleware
 	// MemDB  *gorm.DB
 }
 
@@ -53,6 +56,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config: c,
 		DB:     db,
 		// MemDB:  memoryDB,
-		EvmClientsMap: evmClientsMap,
+		EvmClientsMap:         evmClientsMap,
+		DefaultJsonMiddleware: middleware.NewDefaultJsonMiddleware().Handle,
 	}
 }

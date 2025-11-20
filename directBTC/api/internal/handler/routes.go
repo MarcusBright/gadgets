@@ -13,34 +13,40 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/task/bind",
-				Handler: BindEvmAddressHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/task/list",
-				Handler: GetTaskListHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.DefaultJsonMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/task/bind",
+					Handler: BindEvmAddressHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/task/list",
+					Handler: GetTaskListHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/api/v1"),
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/btc/address/transactionHistory",
-				Handler: GetBtcAddressTransactionHistoryHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/btc/address/trialComplete",
-				Handler: GetBtcAddressIsTrialHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.DefaultJsonMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/btc/address/transactionHistory",
+					Handler: GetBtcAddressTransactionHistoryHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/btc/address/trialComplete",
+					Handler: GetBtcAddressIsTrialHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/api/v1"),
 	)
 }

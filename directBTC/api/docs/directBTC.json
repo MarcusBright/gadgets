@@ -786,6 +786,15 @@
           "default": 0,
           "example": 0
         },
+        "onlyConfirmed": {
+          "type": "boolean",
+          "default": false,
+          "enum": [
+            "true",
+            "false"
+          ],
+          "example": false
+        },
         "orderDir": {
           "type": "string",
           "default": "desc",
@@ -903,7 +912,7 @@
       }
     }
   },
-  "x-date": "2025-11-18 15:00:52",
+  "x-date": "2025-11-21 18:06:28",
   "x-description": "This is a goctl generated swagger file.",
   "x-github": "https://github.com/zeromicro/go-zero",
   "x-go-zero-doc": "https://go-zero.dev/",

@@ -240,12 +240,17 @@ func (l *BindEvmAddressLogic) validateBtcTrialAndWhitelist(message types.Message
 			return fmt.Errorf("not in whitelist")
 		}
 	} else {
-		if trialResp.TrialInfo == nil || trialResp.TrialInfo.BindInfo == nil {
+		// bind trial
+		if trialResp.TrialInfo == nil {
 			return fmt.Errorf("sys wrong")
 		}
 		if trialResp.TrialInfo.Hash != message.TransactionHash {
+			// bind another amount + fee == tinyTry, but not the trial
 			if !trialResp.TrialComplete {
 				return fmt.Errorf("trial not complete")
+			}
+			if trialResp.TrialInfo.BindInfo == nil {
+				return fmt.Errorf("bind info nil, sys wrong")
 			}
 			if trialResp.TrialInfo.BindInfo.BindedEvmAddress != message.EvmAddress {
 				return fmt.Errorf("evmAddress not the trial address")
